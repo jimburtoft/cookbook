@@ -20,6 +20,9 @@
 
 set -uo pipefail
 
+# Slurm binaries live outside the default PATH on paragao-ml-cluster
+export PATH="/opt/aws/pcs/scheduler/slurm-25.11/bin:$PATH"
+
 NPROC="${NPROC:-8}"
 LNC="${LNC:-2}"
 COLL="${COLL:-all_reduce}"
