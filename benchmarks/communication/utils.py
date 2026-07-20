@@ -1,6 +1,7 @@
 import torch
 import os, sys
 import math
+import time
 import argparse
 
 COMMS_BENCH_DIR = os.path.join(os.path.dirname(__file__), "../")
@@ -259,6 +260,71 @@ def _element_size(dtype):
         return 1
     else:
         return torch.iinfo(dtype).bits >> 3
+
+
+# ------------------------------------------------------------------
+# Device / timing / cache helpers shared by all benchmark files.
+# All are backend-neutral: they fall through to the CUDA path when
+# _NEURON_ACTIVE is False, so upstream GPU behavior is unchanged.
+# ------------------------------------------------------------------
+
+def make_timer_events():
+    """Return (start, end) timing markers.
+
+    CUDA backends: real torch.cuda.Event(enable_timing=True) pair.
+    Neuron backend: (None, None) sentinels. Actual timestamps are captured
+    by record_event() at record time using time.perf_counter().
+    """
+    if _NEURON_ACTIVE:
+        return None, None
+    return (
+        torch.cuda.Event(enable_timing=True),
+        torch.cuda.Event(enable_timing=True),
+    )
+
+
+def record_event(event):
+    """Record 'now' into a timing marker.
+
+    - CUDA path: calls event.record() (device-side timestamp) and returns
+      the event unchanged, so callers store the same handle for elapsed().
+    - Neuron path: event is None; we return time.perf_counter() as the
+      Python-side timestamp. Callers overwrite their local variable with
+      the returned value.
+
+    Timing correctness on Neuron: the calling loop MUST wrap this call with
+    sync_all() (or a bare torch.neuron.synchronize()) at both ends, or the
+    timer measures dispatch time instead of actual completion time. See
+    OpencodeDocs/steering/pytorch-native.md.
+    """
+    if event is None:
+        return time.perf_counter()
+    event.record()
+    return event
+
+
+def elapsed_seconds(start, end):
+    """Return elapsed seconds between two markers created via record_event()."""
+    if isinstance(start, torch.cuda.Event) and isinstance(end, torch.cuda.Event):
+        return start.elapsed_time(end) / 1000.0
+    return float(end) - float(start)
+
+
+def device_for(local_rank):
+    """Return the destination device string for tensor placement.
+
+    Neuron backend: 'neuron' (no per-core index; core selection is via env).
+    CUDA backend: 'cuda:{local_rank}'.
+    """
+    if _NEURON_ACTIVE:
+        return "neuron"
+    return f"cuda:{local_rank}"
+
+
+def empty_cache():
+    """No-op on Neuron; torch.cuda.empty_cache() on CUDA."""
+    if not _NEURON_ACTIVE:
+        torch.cuda.empty_cache()
 
 
 def benchmark_parser():
