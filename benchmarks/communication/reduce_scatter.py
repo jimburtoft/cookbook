@@ -89,6 +89,12 @@ def run_reduce_scatter(local_rank, args):
             try:
                 # Ensure tensor size is divisible by world_size for reduce_scatter
                 M = M - (M % world_size) if M % world_size != 0 else M
+                # Skip zero-sized allocations. Under CUDA the NCCL backend
+                # silently accepts empty tensors; the Neuron backend does not
+                # (RuntimeError: 'tensors cannot be empty'). This branch fires
+                # for M values smaller than world_size, e.g. M=2 with WS=4.
+                if M == 0:
+                    continue
                 mat = torch.ones(world_size, M,
                                dtype=getattr(torch, args.dtype)).to(device_str)
                 sync_all()
