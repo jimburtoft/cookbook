@@ -286,18 +286,32 @@ def make_timer_events():
 def record_event(event):
     """Record 'now' into a timing marker.
 
-    - CUDA path: calls event.record() (device-side timestamp) and returns
+    - CUDA path: calls event.record() (a stream-ordered timestamp -- the
+      event fires when the stream reaches this point, which correctly
+      represents "after everything I have dispatched so far") and returns
       the event unchanged, so callers store the same handle for elapsed().
-    - Neuron path: event is None; we return time.perf_counter() as the
-      Python-side timestamp. Callers overwrite their local variable with
-      the returned value.
+    - Neuron path: event is None; we FIRST call torch.neuron.synchronize()
+      to ensure everything the caller has dispatched is genuinely complete,
+      THEN return time.perf_counter() as the Python-side timestamp.
 
-    Timing correctness on Neuron: the calling loop MUST wrap this call with
-    sync_all() (or a bare torch.neuron.synchronize()) at both ends, or the
-    timer measures dispatch time instead of actual completion time. See
-    OpencodeDocs/steering/pytorch-native.md.
+    Why the extra sync on the Neuron path:  time.perf_counter() is a
+    wall-clock call that runs on the CPU immediately -- it is not aware of
+    the Neuron device queue. Without the sync we would measure host
+    dispatch time, not real completion time. This is exactly the failure
+    mode Task 003 (this project) documented at the XLA layer, and the
+    steering doc warns about at line 506.
+
+    Note: because callers already wrap timed loops with sync_all() at both
+    ends, the extra sync inside record_event() is technically redundant
+    for the two record_event() sites that already have a sync_all()
+    immediately before them. It is kept anyway because it makes the
+    primitive correct regardless of caller discipline.
     """
     if event is None:
+        # Neuron: sync THEN sample the wall clock. Cheap when no work is
+        # pending (torch.neuron.synchronize() is a fast no-op in that
+        # case) and correct when work IS pending.
+        torch.neuron.synchronize()
         return time.perf_counter()
     event.record()
     return event
