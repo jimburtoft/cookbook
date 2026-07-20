@@ -9,12 +9,39 @@ from .constants import *
 
 global dist
 
+# Set to True by init_torch_distributed(backend='neuron'). Read by sync_all()
+# and max_numel() so per-benchmark files don't need to plumb args through.
+_NEURON_ACTIVE = False
+
 
 def env2int(env_list, default=-1):
     for e in env_list:
         val = int(os.environ.get(e, -1))
         if val >= 0: return val
     return default
+
+
+def is_neuron_backend(args):
+    """True when the benchmark is running on AWS Trainium under PyTorch Native.
+
+    Callers pass args (the argparse Namespace); we check args.backend so a
+    single flag flip switches every device/timer/mem branch throughout the suite.
+    """
+    return getattr(args, 'backend', None) == NEURON_BACKEND
+
+
+def get_device(args, local_rank):
+    """Return the torch device object appropriate for the active backend.
+
+    - Neuron backend: torch.device("neuron"). Per Beta 3, tensor placement
+      is by device string; there is no per-core index in the device object.
+      Local core selection is controlled by NEURON_RT_VISIBLE_CORES / torchrun
+      LOCAL_RANK env vars, not by the device object itself.
+    - Other backends (nccl/mpi/ccl): standard CUDA device with local_rank.
+    """
+    if is_neuron_backend(args):
+        return torch.device("neuron")
+    return torch.device(f"cuda:{local_rank}")
 
 
 def init_torch_distributed(backend):
@@ -25,6 +52,9 @@ def init_torch_distributed(backend):
     if 'MASTER_PORT' not in os.environ:
         os.environ['MASTER_PORT'] = str(TORCH_DISTRIBUTED_DEFAULT_PORT)
     if 'MASTER_ADDR' not in os.environ:
+        # Under torchrun (the launcher we use for Neuron), MASTER_ADDR is always
+        # set by the launcher and this branch is not reached. Keep the mpi4py
+        # fallback for GPU-side callers who launch with mpirun.
         try:
             from mpi4py import MPI
         except ModuleNotFoundError:
@@ -53,9 +83,23 @@ def init_torch_distributed(backend):
     if 'WORLD_SIZE' not in os.environ:
         os.environ['WORLD_SIZE'] = str(world_size)
 
-    torch.distributed.init_process_group(backend)
-    local_rank = int(os.environ['LOCAL_RANK'])
-    torch.cuda.set_device(local_rank)
+    if backend == NEURON_BACKEND:
+        # Import torch_neuronx to register the 'neuron' backend with
+        # torch.distributed. Without this import the init_process_group call
+        # below raises "Invalid backend: 'neuron'".
+        import torch_neuronx  # noqa: F401 -- side effect: register backend and 'neuron' device
+        # Some Beta 3 drops expose the backend under a different alias; keep
+        # the direct string until Neuron team publishes a canonical name.
+        torch.distributed.init_process_group(backend=NEURON_BACKEND)
+        # No cuda.set_device on Neuron. Local core pinning is done via env
+        # (NEURON_RT_VISIBLE_CORES) or by the torchrun --nproc_per_node launcher
+        # which spawns one process per logical core.
+        global _NEURON_ACTIVE
+        _NEURON_ACTIVE = True
+    else:
+        torch.distributed.init_process_group(backend)
+        local_rank = int(os.environ['LOCAL_RANK'])
+        torch.cuda.set_device(local_rank)
 
 
 def init_deepspeed_comm(backend):
@@ -145,13 +189,29 @@ def get_metric_strings(args, tput, busbw, duration):
 
 
 def sync_all():
-    torch.cuda.synchronize()
+    """Barrier + device synchronize. Works for both CUDA and Neuron backends.
+
+    Neuron ops are asynchronous with respect to the CPU under PyTorch Native
+    Beta 3; without a device-side sync before the barrier the caller measures
+    dispatch time instead of actual completion time. See
+    OpencodeDocs/steering/pytorch-native.md and Task 003 (this project) for
+    the failure mode we are guarding against.
+    """
+    if _NEURON_ACTIVE:
+        torch.neuron.synchronize()
+    else:
+        torch.cuda.synchronize()
     dist.barrier()
 
 
 def max_numel(comm_op, dtype, mem_factor, local_rank, args):
     dtype_size = _element_size(dtype)
-    max_memory_per_gpu = torch.cuda.get_device_properties(local_rank).total_memory * mem_factor
+    if _NEURON_ACTIVE or is_neuron_backend(args):
+        # Neuron: use a hardcoded HBM budget per logical core (see constants.py).
+        # torch.neuron does not expose device_properties in Beta 3.
+        max_memory_per_gpu = NEURON_HBM_PER_LOGICAL_CORE_BYTES * mem_factor
+    else:
+        max_memory_per_gpu = torch.cuda.get_device_properties(local_rank).total_memory * mem_factor
     if comm_op == 'all_reduce' or comm_op == 'pt2pt' or comm_op == 'broadcast':
         elements_per_gpu = int(max_memory_per_gpu // dtype_size)
     elif comm_op == 'reduce_scatter':
@@ -212,7 +272,7 @@ def benchmark_parser():
     parser.add_argument("--backend",
                         type=str,
                         default=DEFAULT_BACKEND,
-                        choices=['nccl', 'ccl', 'mpi'],
+                        choices=['nccl', 'ccl', 'mpi', NEURON_BACKEND],
                         help='Communication library to use')
     parser.add_argument("--dist",
                         type=str,
