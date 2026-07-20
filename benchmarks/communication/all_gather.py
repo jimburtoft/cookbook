@@ -33,7 +33,7 @@ def timed_all_gather(input, output, start_event, end_event, args):
     sync_all()
 
     # time the actual comm op trials times and average it
-    start_event.record()
+    start_event = record_event(start_event)
     for i in range(args.trials):
         if args.dist == 'torch':
             if hasattr(torch.distributed, "_all_gather_base"):
@@ -45,9 +45,9 @@ def timed_all_gather(input, output, start_event, end_event, args):
                 dist.all_gather(output_tensors, input, group=None, async_op=True)
         elif args.dist == 'deepspeed':
             dist.allgather_fn(output, input, group=None, async_op=args.async_op)
-    end_event.record()
+    end_event = record_event(end_event)
     sync_all()
-    duration = start_event.elapsed_time(end_event) / 1000
+    duration = elapsed_seconds(start_event, end_event)
 
     # maintain and clean performance data
     avg_duration = duration / args.trials
@@ -73,8 +73,8 @@ def run_all_gather(local_rank, args):
     global_rank = dist.get_rank()
     world_size = dist.get_world_size()
 
-    start_event = torch.cuda.Event(enable_timing=True)
-    end_event = torch.cuda.Event(enable_timing=True)
+    start_event, end_event = make_timer_events()
+    device_str = device_for(local_rank)
 
     if args.scan:
         # Create list of message sizes
@@ -88,18 +88,18 @@ def run_all_gather(local_rank, args):
             global_rank = dist.get_rank()
             try:
                 mat = torch.ones(world_size, M,
-                                 dtype=getattr(torch, args.dtype)).cuda(local_rank)
+                                 dtype=getattr(torch, args.dtype)).to(device_str)
                 sync_all()
                 input = ((mat.mul_(float(global_rank))).view(-1))
                 # Delete original mat to avoid OOM
                 del mat
-                torch.cuda.empty_cache()
+                empty_cache()
                 output = torch.zeros(input.nelement() * world_size,
-                                     dtype=getattr(torch, args.dtype)).cuda(local_rank)
+                                     dtype=getattr(torch, args.dtype)).to(device_str)
             except RuntimeError as e:
                 if 'out of memory' in str(e):
                     if dist.get_rank() == 0:
-                        print('WARNING: Ran out of GPU memory. Exiting comm op.')
+                        print('WARNING: Ran out of device memory. Exiting comm op.')
                     sync_all()
                     break
                 else:
@@ -121,18 +121,18 @@ def run_all_gather(local_rank, args):
                                      args=args)
         try:
             mat = torch.ones(elements_per_gpu, dtype=getattr(torch,
-                                                             args.dtype)).cuda(local_rank)
+                                                             args.dtype)).to(device_str)
             # multiply each GPU's tensor by the rank to ease debugging
             input = ((mat.mul_(float(global_rank))).view(-1))
             # Delete original mat to avoid OOM
             del mat
-            torch.cuda.empty_cache()
+            empty_cache()
             output = torch.zeros(elements_per_gpu * world_size,
-                                 dtype=getattr(torch, args.dtype)).cuda(local_rank)
+                                 dtype=getattr(torch, args.dtype)).to(device_str)
         except RuntimeError as e:
             if 'out of memory' in str(e):
                 if dist.get_rank() == 0:
-                    print('WARNING: Ran out of GPU memory. Try to reduce the --mem-factor argument!')
+                    print('WARNING: Ran out of device memory. Try to reduce the --mem-factor argument!')
                 sync_all()
                 return
             else:

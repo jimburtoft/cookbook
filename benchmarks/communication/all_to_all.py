@@ -31,15 +31,15 @@ def timed_all_to_all(input, output, start_event, end_event, args):
     sync_all()
 
     # time the actual comm op trials times and average it
-    start_event.record()
+    start_event = record_event(start_event)
     for i in range(args.trials):
         if args.all_to_all_v:
             dist.all_to_all(output_list, input_list, async_op=args.async_op)
         else:
             dist.all_to_all_single(output, input, async_op=args.async_op)
-    end_event.record()
+    end_event = record_event(end_event)
     sync_all()
-    duration = start_event.elapsed_time(end_event) / 1000
+    duration = elapsed_seconds(start_event, end_event)
 
     # maintain and clean performance data
     avg_duration = duration / args.trials
@@ -67,8 +67,8 @@ def run_all_to_all(local_rank, args):
     op_name = "alltoallv" if args.all_to_all_v else "alltoall"
     print_header(args, op_name)
 
-    start_event = torch.cuda.Event(enable_timing=True)
-    end_event = torch.cuda.Event(enable_timing=True)
+    start_event, end_event = make_timer_events()
+    device_str = device_for(local_rank)
 
     if args.scan:
         M_LIST = []
@@ -81,7 +81,7 @@ def run_all_to_all(local_rank, args):
             global_rank = dist.get_rank()
             try:
                 mat = torch.ones(world_size, M,
-                                 dtype=getattr(torch, args.dtype)).cuda(local_rank)
+                                 dtype=getattr(torch, args.dtype)).to(device_str)
                 assert mat.numel() % world_size == 0, f"tensor cannot be divided in {world_size} chunks"
                 sync_all()
                 input = ((mat.mul_(float(global_rank))).view(-1))
@@ -89,7 +89,7 @@ def run_all_to_all(local_rank, args):
             except RuntimeError as e:
                 if 'out of memory' in str(e):
                     if dist.get_rank() == 0:
-                        print('WARNING: Ran out of GPU memory. Exiting comm op.')
+                        print('WARNING: Ran out of device memory. Exiting comm op.')
                     sync_all()
                     break
                 else:
@@ -105,19 +105,19 @@ def run_all_to_all(local_rank, args):
                                      args=args)
         try:
             mat = torch.ones(elements_per_gpu, dtype=getattr(torch,
-                                                             args.dtype)).cuda(local_rank)
+                                                             args.dtype)).to(device_str)
             assert mat.numel(
             ) % world_size == 0, f"tensor with {mat.numel()} elements cannot be divided in {world_size} chunks"
             input = ((mat.mul_(float(global_rank))).view(-1))
             # Delete original mat to avoid OOM
             del mat
-            torch.cuda.empty_cache()
+            empty_cache()
             output = torch.zeros(elements_per_gpu,
-                                 dtype=getattr(torch, args.dtype)).cuda(local_rank)
+                                 dtype=getattr(torch, args.dtype)).to(device_str)
         except RuntimeError as e:
             if 'out of memory' in str(e):
                 if dist.get_rank() == 0:
-                    print('WARNING: Ran out of GPU memory. Try to reduce the --mem-factor argument!')
+                    print('WARNING: Ran out of device memory. Try to reduce the --mem-factor argument!')
                 sync_all()
                 return
             else:
