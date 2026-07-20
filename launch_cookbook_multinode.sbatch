@@ -35,10 +35,12 @@ source /fsx/self-managed/beta3/native_venv/bin/activate
 
 cd /fsx/self-managed/jburtoft/collective/cookbook/benchmarks
 
-# Head node for c10d rendezvous (rank-0 side of torchrun)
+# Head node for c10d rendezvous (rank-0 side of torchrun).
+# `scontrol getaddrs` prints "hostname: IP:PORT" -- take the IP only,
+# then let torchrun pick its own rdzv port (29500).
 NODELIST=$(scontrol show hostnames "$SLURM_NODELIST")
 HEAD_NODE=$(echo "$NODELIST" | head -1)
-HEAD_ADDR=$(scontrol getaddrs "$HEAD_NODE" 2>/dev/null | awk '{print $2}' | head -1)
+HEAD_ADDR=$(scontrol getaddrs "$HEAD_NODE" 2>/dev/null | awk '{print $2}' | cut -d: -f1 | head -1)
 if [ -z "$HEAD_ADDR" ]; then
   HEAD_ADDR=$(getent hosts "$HEAD_NODE" | awk '{print $1}' | head -1)
 fi
@@ -51,7 +53,9 @@ flag="--${COLL//_/-}"
 
 # srun runs one torchrun per node. torchrun on each node spawns NPROC
 # python workers and rendezvouses at HEAD_ADDR:29500.
-srun --nodes="$SLURM_NNODES" --ntasks-per-node=1 --cpu-bind=none bash -c "
+# --export=ALL is required so PATH (which contains the Slurm binaries)
+# and the shell utilities on the compute node are visible to bash.
+srun --nodes="$SLURM_NNODES" --ntasks-per-node=1 --cpu-bind=none --export=ALL /bin/bash -c "
   export NEURON_LOGICAL_NC_CONFIG=$LNC
   cd /fsx/self-managed/jburtoft/collective/cookbook/benchmarks
   source /fsx/self-managed/beta3/native_venv/bin/activate
