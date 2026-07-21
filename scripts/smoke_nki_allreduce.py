@@ -36,10 +36,13 @@ def main():
     torch.neuron.synchronize()
     y_fw_cpu = y_fw.cpu()
 
-    # --- NKI kernel path: [lnc_degree] sets the SPMD launch grid ---
+    # --- NKI kernel path: wrap_nki(kernel)[lnc_degree] sets the SPMD launch grid ---
+    # NOTE: the LNC grid MUST be set on the HOP caller (result of wrap_nki),
+    # not on the raw kernel object. wrap_nki(kernel[lnc]) is a silent no-op
+    # at the HOP layer -- see benchmarks/communication/nki_ops.py for the
+    # underlying failure mode this causes on LNC=2.
     replica_group = ReplicaGroup([list(range(world_size))])
-    kernel = all_reduce_hbm_kernel[lnc_degree]
-    wrapped = wrap_nki(kernel)
+    wrapped = wrap_nki(all_reduce_hbm_kernel)[lnc_degree]
 
     x_nki = torch.ones(H, W, dtype=torch.float32, device=device) * (rank + 1.0)
     torch.neuron.synchronize()

@@ -1,0 +1,26 @@
+=== 2026-07-21T22:21:26+00:00 node=trainium-2 LNC=2 NPROC=4 COLL=all_to_all ===
+=== coll=all_to_all WS=4 LNC=2 NKI_LNC=2 host=ip-10-2-12-189 ===
+2026-Jul-21 22:21:50.044298 3078650:3078709  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:21:50.046371 3078651:3078730  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:21:50.093324 3078653:3078750  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:21:50.112654 3078652:3078770  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+  size_bytes  per_rank_elem      fw_us     nki_us  fw_tput_GBps  nki_tput_GBps  fw_busbw_GBps  nki_busbw_GBps  speedup
+2026-Jul-21 22:21:55.157445 3078650:3078709  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:21:55.1575192026-Jul-21 22:21:55.157536 3078652:3078770  WARN   NRT:nrta_tensor_copy                        2026-Jul-21 22:21:55.157557 3078651:3078730  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runti 3078653:3078750  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+me release.  (this log repeats as INFO level)
+
+         512            128      955.7      140.1         0.001          0.004          0.000           0.003     6.82
+        1024            256      953.3      141.5         0.001          0.007          0.001           0.005     6.74
+        2048            512      990.1      143.8         0.002          0.014          0.002           0.011     6.88
+        4096           1024     1056.3      140.8         0.004          0.029          0.003           0.022     7.50
+        8192           2048     1003.7      143.7         0.008          0.057          0.006           0.043     6.99
+       16384           4096     1017.0      143.3         0.016          0.114          0.012           0.086     7.10
+       32768           8192      974.3      141.8         0.034          0.231          0.025           0.173     6.87
+       65536          16384      975.2      142.8         0.067          0.459          0.050           0.344     6.83
+      131072          32768     1026.2      141.4         0.128          0.927          0.096           0.695     7.26
+      262144          65536      975.4      142.8         0.269          1.836          0.202           1.377     6.83
+      524288         131072      973.2      149.9         0.539          3.497          0.404           2.623     6.49
+     1048576         262144      964.2      148.2         1.087          7.078          0.816           5.308     6.51
+     2097152         524288      967.8      159.0         2.167         13.189          1.625           9.892     6.09
+     4194304        1048576     1015.4      176.1         4.131         23.822          3.098          17.867     5.77
+=== exit=0 ===

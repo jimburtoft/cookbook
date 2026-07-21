@@ -1,0 +1,24 @@
+=== 2026-07-21T22:12:21+00:00 LNC=2 NPROC=4 ===
+rank=1/4 LNC=2 NKI_LNC=2
+rank=3/4 LNC=2 NKI_LNC=2
+rank=2/4 LNC=2 NKI_LNC=2
+rank=0/4 LNC=2 NKI_LNC=2
+2026-Jul-21 22:12:42.674167 3068805:3068860  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:12:42.693559 3068803:3068881  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:12:53.196186 3068804:3068949  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:12:53.198736 3068806:3068969  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:12:58.301209 3068803:3068881  WARN   NRT:nrta_tensor_read                        nrta_tensor_read currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:12:58.301351 3068804:3068949  WARN   NRT:nrta_tensor_read                        nrta_tensor_read currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:12:58.301430 3068806:3068969  WARN   NRT:nrta_tensor_read                        nrta_tensor_read currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 22:12:58.302412 3068805:3068860  WARN   NRT:nrta_tensor_read                        nrta_tensor_read currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+got: 10.0, expected: 10.0
+CORRECTNESS: PASS
+2026-Jul-21 22:13:07.6868172026-Jul-21 22:13:07.6868192026-Jul-21 22:13:07.6868212026-Jul-21 22:13:07.686828 3068804:3068949  WARN   NRT:nrta_tensor_copy                         3068805:3068860  WARN   NRT:nrta_tensor_copy                         3068803:3068881  WARN   NRT:nrta_tensor_copy                         3068806:3068969  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtinrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtinrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtinrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)me release.  (this log repeats as INFO level)me release.  (this log repeats as INFO level)me release.  (this log repeats as INFO level)
+
+
+
+
+1 MB all_reduce (LNC=2 WS=4):
+  framework: 834.4 us
+  NKI kernel: 161.1 us
+  speedup: 5.18x

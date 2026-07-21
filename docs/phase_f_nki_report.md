@@ -138,79 +138,63 @@ On subsequent calls the caller pays the cost of a `wrap_nki` HOP dispatch (a few
 
 Concretely, the ~1 ms framework floor and ~100 us NKI floor imply that **the torch.distributed dispatch chain is spending ~900 us of pure launch overhead on every call**. That is what the NKI-kernel path eliminates.
 
-## LNC=2 status: pinpointed to a `neuronx-cc` compiler bug in `nki.collectives.*` handling
+## LNC=2 status: WORKS with the correct `wrap_nki` invocation pattern
 
-Every attempt to run the NKI kernels under `NEURON_LOGICAL_NC_CONFIG=2` (either with `kernel[1]` or `kernel[2]` for the SPMD launch grid) failed compilation with:
+**Update 2026-07-21 (round 4):** LNC=2 is not blocked. The 2.31 HBM kernels work under LNC=2 on stock Beta 3 with no upgrades. Prior rounds' `NCC_ILLC059` failures were caused by an incorrect `wrap_nki` invocation pattern, not by a compiler bug or a version skew.
 
-```
-error message="COMPILATION FAILED: [INTERNAL_ERROR] [NCC_ILLC059] Could
-not find MemoryLocation named inst__I-3-0:src on core 1 - Please open a
-support ticket at https://github.com/aws-neuron/aws-neuron-sdk/issues/new."
-```
-
-**Round 3 (2026-07-21)** -- progressive kernel minimization on stock Beta 3 pinpointed the exact trigger. Full writeup + all raw logs are in `docs/phase_f_lnc2_round3/README.md`; the executive summary:
-
-Starting from a stock Beta 3 environment (nki 0.4.0b4, neuronx-cc 2.25.1280, torch-neuronx 2.11.3.0.1278, no upgrades), we built up kernels one primitive at a time and observed which ones pass or fail under LNC=2. Runs used the paragao cluster's shared Beta 3 venv, at zero cost.
-
-| Kernel | What it does | LNC=2 result |
-|--------|-------------|--------------|
-| A (trivial `dma_copy`) | `out = nl.ndarray(...); nisa.dma_copy(dst=out, src=x)` | **PASS** |
-| B (single `name="..."`) | Adds `name="out"` to the ndarray | **PASS** |
-| C (two named + chained DMA) | 3 named ndarrays with `dma_copy` chain, no collective | **PASS** |
-| D (C + `ncc.all_reduce`) | Only difference from C: one `ncc.all_reduce` call | **FAIL `NCC_ILLC059`** |
-
-All four `nki.collectives.*` primitives trigger the failure identically:
-
-| Primitive | LNC=2 (via wrap_nki) |
-|-----------|---------------------|
-| `ncc.all_reduce` | FAIL `NCC_ILLC059` |
-| `ncc.all_gather` | FAIL `NCC_ILLC059` |
-| `ncc.reduce_scatter` | FAIL `NCC_ILLC059` |
-| `ncc.all_to_all` | FAIL `NCC_ILLC059` |
-
-Same code compiles cleanly under LNC=1 (fails only at NEFF-load time when a single-process test uses a 1-rank `ReplicaGroup`, which is orthogonal). 4-rank distributed torchrun with `ReplicaGroup([[0,1,2,3]])` under LNC=2 also fails identically -- rules out any rank-count / replica-group mismatch.
-
-Also independent of every version we can control:
-- nki 0.4.0b4 -> nki 0.5.0: no effect (round 1 confirmed)
-- neuronx-cc 2.25.1280 -> 2.26.6360: no effect (round 2 confirmed)
-- torch-neuronx Beta 3 wheel -> Beta 3 source rebuild -> `main` branch @ eb31942 source rebuild: no effect (round 2 confirmed)
-- Runtime lib 2.32.19 -> 2.33.10: no effect (round 2 confirmed)
-- Kernel[1] vs kernel[2]: no effect (round 3 confirmed)
-
-**The bug is in `neuronx-cc`'s SPMD replication pass** when it processes any `nki.collectives.*` primitive under LNC=2. The compiler emits an instruction referencing a memory location named `inst__I-3-0:src` (the collective's `src` buffer, SPMD replicated across 2 physical cores per LNC=2), but that location isn't materialized on core 1 -- likely a bookkeeping error in the LNC=2 buffer replication logic.
-
-**Same kernel source compiles cleanly under LNC=2 via the DLAMI's stock torch-XLA path** (round 1 confirmed via a manual smoke test). XLA emits a subtly different HLO for the same nki kernel, avoiding whatever pattern trips the compiler. XLA is not a practical workaround though -- its lazy graph construction reintroduces per-call overhead (~84 ms per NKI call vs ~230 us framework at 1 MB WS=4 LNC=2), eating the entire wrap_nki speedup.
-
-**Fix path**: strictly compiler-side. Wait for a `neuronx-cc` release (Beta 4 / SDK 2.32+) that fixes the LNC=2 SPMD pass. No user-side upgrade in nki, torch-neuronx, or the runtime will help. When the fix lands, the existing `--use-nki` code in this fork should work under LNC=2 with no code change -- just set `NKI_LNC_DEGREE=2`.
-
-**Minimal reproducer** (5 lines, ~30 seconds on any Beta 3 trn2 instance):
+The correct pattern is:
 
 ```python
-import os
-os.environ.setdefault("NEURON_LOGICAL_NC_CONFIG", "2")
-import torch, torch_neuronx, nki, nki.language as nl, nki.isa as nisa, nki.collectives as ncc
-from nki.collectives import ReplicaGroup
-from torch_neuronx import wrap_nki
-
-@nki.jit
-def with_all_reduce(x, rg):
-    src = nl.ndarray(x.shape, dtype=x.dtype, buffer=nl.shared_hbm, name="src")
-    dst = nl.ndarray(x.shape, dtype=x.dtype, buffer=nl.shared_hbm, name="dst")
-    out = nl.ndarray(x.shape, dtype=x.dtype, buffer=nl.shared_hbm)
-    nisa.dma_copy(dst=src, src=x)
-    ncc.all_reduce(dsts=[dst], srcs=[src], op=nl.add, replica_group=rg)
-    nisa.dma_copy(dst=out, src=dst)
-    return out
-
-x = torch.ones(128, 512, dtype=torch.float32, device="neuron")
-torch.neuron.synchronize()
-y = wrap_nki(with_all_reduce[2])(x, ReplicaGroup([[0]]))
-torch.neuron.synchronize()  # <-- fails here with NCC_ILLC059
+wrapped = wrap_nki(kernel)[lnc]   # LNC goes on the HOP caller
+y = wrapped(input, replica_group)
 ```
 
-Raw logs for rounds 1 and 2 are in `docs/phase_f_lnc2_test/` and `docs/phase_f_lnc2_round2/` respectively. Round 3 (this one) is in `docs/phase_f_lnc2_round3/`.
+Not:
 
-The LNC=1 path works cleanly. All the numbers in this report use LNC=1 with 8 logical cores on one trn2.48xlarge chip. Once a compiler patch lands, users can flip `NKI_LNC_DEGREE=2` and expect the same speedup at LNC=2 world sizes.
+```python
+wrapped = wrap_nki(kernel[lnc])   # WRONG: LNC on kernel is silently ignored
+y = wrapped(input, replica_group)
+```
+
+**Why it matters**: `wrap_nki` returns an `NKIHOPCaller` whose `grid` field defaults to `[]`. That grid -- not the kernel's `lnc` field -- is what the HOP dispatch actually passes to the compiler as the SPMD launch degree. The kernel-level `[lnc]` is captured in the registered kernel object but is orthogonal to the caller's grid. Under LNC=1 the mismatch is silent (empty grid resolves to lnc=1, matching the runtime). Under LNC=2 it's fatal -- the compiler generates SPMD-LNC=1 instructions and fails at lowering with `[NCC_ILLC059] Could not find MemoryLocation named inst__I-3-0:src on core 1`.
+
+The fix is a one-line change in `benchmarks/communication/nki_ops.py`:
+
+```python
+# BEFORE (LNC=2 hits NCC_ILLC059):
+kernel = _KERNELS_BY_NAME[coll][lnc]
+wrapped = _wrap_nki(kernel)
+
+# AFTER (works on both LNC=1 and LNC=2):
+wrapped = _wrap_nki(_KERNELS_BY_NAME[coll])[lnc]
+```
+
+### LNC=2 measured speedups (trn2.48xlarge single chip, WS=4)
+
+Sweep with the corrected pattern on stock Beta 3 (nki 0.4.0b4, neuronx-cc 2.25.1280, torch-neuronx 2.11.3.0.1278):
+
+| Collective | Framework floor (us) | NKI floor (us) | Peak speedup |
+|-----------|--------------------:|---------------:|-------------:|
+| all_reduce | ~900 | ~145 | **6.8x** at 4 KB |
+| all_gather | ~470 | ~140 | 3.5x at 1 KB |
+| reduce_scatter | ~520 | ~145 | 3.9x at 32 KB |
+| all_to_all | ~980 | ~140 | **7.5x** at 4 KB |
+
+Full sweep logs in `docs/phase_f_lnc2_round4/`. Correctness verified end-to-end (4-rank all_reduce returns 1+2+3+4 = 10 as expected).
+
+### Round-1/2/3 history
+
+Prior rounds attempted to fix LNC=2 through version upgrades and source rebuilds:
+
+* **Round 1** (2026-07-21): upgraded nki 0.4.0b4 -> 0.5.0 and neuronx-cc 2.25 -> 2.26. LNC=2 still fails. Concluded "not a nki version issue".
+* **Round 2** (2026-07-21): rebuilt torch-neuronx from source (Beta 3 branch + `main` branch, with a manually applied StreamImpl.cpp compile-error patch). LNC=2 still fails. Concluded "bug is in neuronx-cc".
+* **Round 3** (2026-07-21): progressive kernel minimization on stock Beta 3 showed that adding `ncc.all_reduce` to an otherwise-passing kernel triggers `NCC_ILLC059`. Concluded "bug is in neuronx-cc's LNC=2 SPMD pass over nki.collectives.* primitives".
+
+All three conclusions were **wrong**. The compiler was correctly rejecting an ill-formed SPMD graph -- the graph came from wrap_nki because our calling code didn't set the grid on the caller. Round 3 came closest to the truth (it correctly identified that the specific IR being emitted for the collective was the trigger) but stopped at "compiler mishandles it" instead of "what code produces that IR".
+
+**Cost of rounds 1-3**: ~$43 (one 19h capacity block on sa-east-1) + ~4 hours of trn2.3xlarge time + two 29-min Bazel builds. Round 4 fixed it in ~15 minutes on the shared paragao cluster (zero cost) by reading `torch_neuronx/nki_hop.py`.
+
+Round-4 full writeup + all logs: `docs/phase_f_lnc2_round4/README.md`.
 
 ## What this means for the collective project
 
@@ -248,10 +232,10 @@ The single-node sbatch above needs a `EXTRA=--use-nki` toggle wired into `launch
 ## Follow-ups for task 008
 
 * **Bundle `--use-nki` into the sbatch launcher's export list.** The current `launch_cookbook_singlenode.sbatch` does not thread through an `EXTRA` variable; adding one line so `--use-nki` can be toggled from the queue is a 5-line change.
-* **Retry LNC=2 on Beta 4 / SDK 2.32 whenever a new `neuronx-cc` ships.** Round 3 (2026-07-21) pinpointed the bug to `neuronx-cc`'s LNC=2 SPMD replication pass over any `nki.collectives.*` primitive. No nki version, no torch-neuronx version, no runtime version changes it; the code we can rebuild produces valid IR that the compiler mishandles. When a compiler patch lands, the existing `--use-nki` code should work under LNC=2 with no changes -- just set `NKI_LNC_DEGREE=2` and it should extend the LNC=1 speedups to the WS=4/WS=32/WS=64 topologies.
-* **Cross-node NKI test.** We only ran single-node. Would the NKI kernel path also win across nodes via EFA? nki-library exposes `ReplicaGroup` explicitly, so in principle yes -- but the underlying CCOM path from a compiled NEFF may or may not skip the same layers we skip locally. Worth a Phase G measurement once the LNC=2 issue is resolved and the queue is quiet.
+* **Rerun the full LNC=2 sweep on trn2.48xlarge at larger world sizes** (WS=16, WS=32, WS=64) now that we know how to invoke wrap_nki correctly. The LNC=1 data in this report stands; the LNC=2 data in round 4 is single-chip WS=4. The interesting scaling behavior at LNC=2 across the full 48xlarge is not yet characterized.
+* **Cross-node NKI test.** We only ran single-node. Would the NKI kernel path also win across nodes via EFA? nki-library exposes `ReplicaGroup` explicitly, so in principle yes -- but the underlying CCOM path from a compiled NEFF may or may not skip the same layers we skip locally. Worth a Phase G measurement.
 * **bf16 support.** The HBM kernels are fp32-only in nki-library 2.31; a bf16 variant would immediately halve the byte count on the wire and cut latency proportionally. Filed as a follow-up wish item.
-* **File the `NCC_ILLC059` compiler bug internally.** The 5-line reproducer is in `docs/phase_f_lnc2_round3/README.md`. The Neuron team can reproduce in ~30 seconds on any Beta 3 install.
+* **File a Neuron docs improvement** to make the `wrap_nki(kernel)[grid]` pattern explicit. The current API surface silently accepts `wrap_nki(kernel[grid])` and produces LNC=1 output regardless of the `[grid]` set on the kernel, which is a footgun. The behavior only surfaces on LNC=2 (where a `[NCC_ILLC059]` compile error results) -- LNC=1 users never notice.
 
 ## Files added in this phase
 

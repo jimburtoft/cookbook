@@ -8,10 +8,17 @@ call to a cached wrapper around the corresponding NKI HBM kernel from
 The wrapper:
   * imports the kernel lazily on first use (so plain ``--backend=neuron`` runs
     without ``--use-nki`` do not need the nkilib source on PYTHONPATH),
-  * sets the SPMD launch grid via ``kernel[LNC]`` where LNC is read from
-    ``NKI_LNC_DEGREE`` (default 1),
+  * sets the SPMD launch grid on the HOP caller via ``wrap_nki(kernel)[lnc]``
+    with LNC read from ``NKI_LNC_DEGREE`` (default 2 to match trn2 default),
   * builds a fresh ``ReplicaGroup`` covering the whole world size,
   * caches per-(collective, input_shape) so each NEFF is compiled once.
+
+**Invocation nuance**: the LNC grid MUST be set on the HOP caller returned by
+``wrap_nki``, not on the raw kernel object.  The wrong pattern
+``wrap_nki(kernel[lnc])`` compiles as LNC=1 regardless of the ``[lnc]`` on the
+kernel, because ``wrap_nki`` builds a fresh ``NKIHOPCaller`` with an empty
+``grid`` field.  See ``get_wrapped`` docstring for the failure mode this
+causes on LNC=2.
 
 We do NOT try to make the NKI path shape-compatible with the framework's
 1-D ``torch.ones(N)`` input.  Instead we reshape at call time to the 2-D form
@@ -80,13 +87,11 @@ def _lazy_init() -> None:
 def _lnc_degree() -> int:
     """Read the SPMD launch grid degree from the environment.
 
-    Default 1.  Matches Beta 3 on trn2 when running under
-    NEURON_LOGICAL_NC_CONFIG=1 (8 logical cores).  LNC=2 currently fails at
-    kernel compile time with NCC_ILLC059 -- see docs/phase_e_nki_report.md
-    for the details.  Once that ticket is resolved, LNC=2 will Just Work by
-    setting NKI_LNC_DEGREE=2 in the env.
+    Default 2 -- matches trn2 default LNC=2 (4 logical cores per chip).  Users
+    running under NEURON_LOGICAL_NC_CONFIG=1 (8 logical cores per chip) should
+    also set NKI_LNC_DEGREE=1 so the wrap_nki grid matches the runtime.
     """
-    return int(os.environ.get("NKI_LNC_DEGREE", "1"))
+    return int(os.environ.get("NKI_LNC_DEGREE", "2"))
 
 
 def _to_kernel_shape(x: torch.Tensor, coll: str, world_size: int) -> torch.Tensor:
@@ -133,6 +138,20 @@ def is_nki_supported(coll: str, dtype: torch.dtype) -> bool:
 def get_wrapped(coll: str, shape: tuple, dtype: torch.dtype, world_size: int) -> Callable:
     """Return a (cached) callable that runs the NKI kernel for `coll` on tensors
     with `shape` and `dtype` under a full-world replica group.
+
+    Invocation pattern is ``wrap_nki(kernel)[lnc](args, replica_group)``:
+    the SPMD launch grid (LNC degree) is set on the ``NKIHOPCaller`` returned by
+    ``wrap_nki``, not on the underlying kernel object.  Setting it on the kernel
+    (``wrap_nki(kernel[lnc])``) is a no-op at the HOP layer -- the HOP caller
+    stores its own ``grid`` list which is passed to the compiler via
+    ``dump_config``.  This nuance is not called out anywhere in the public NKI
+    docs; it is only visible in the source of ``torch_neuronx/nki_hop.py``.
+
+    Getting this wrong is silent on LNC=1 (because the HOP caller's default
+    grid==[] resolves to lnc=1, which happens to match) but fatal on LNC=2:
+    the compiler generates SPMD instructions for LNC=1 while the runtime is
+    LNC=2, and lowering fails with
+    ``[NCC_ILLC059] Could not find MemoryLocation named inst__I-3-0:src on core 1``.
     """
     _lazy_init()
     if coll not in _KERNELS_BY_NAME:
@@ -143,8 +162,9 @@ def get_wrapped(coll: str, shape: tuple, dtype: torch.dtype, world_size: int) ->
     if key in _WRAPPED_CACHE:
         return _WRAPPED_CACHE[key]
 
-    kernel = _KERNELS_BY_NAME[coll][lnc]
-    wrapped = _wrap_nki(kernel)
+    # Correct pattern: wrap_nki(kernel)[lnc] -- LNC on the HOP caller.
+    # See docstring above for why we do NOT use wrap_nki(kernel[lnc]).
+    wrapped = _wrap_nki(_KERNELS_BY_NAME[coll])[lnc]
     replica_group = _ReplicaGroup([list(range(world_size))])
 
     if coll in ("all_reduce", "all_to_all"):

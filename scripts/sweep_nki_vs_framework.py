@@ -107,10 +107,14 @@ def _make_input_for_coll(coll: str, per_rank_elem: int, world_size: int, rank: i
 
 
 def _wrap_kernel_for_size(coll: str, lnc_degree: int, world_size: int):
-    """Return a wrapped NKI kernel + kwargs for the collective."""
+    """Return a wrapped NKI kernel + kwargs for the collective.
+
+    Correct pattern: wrap_nki(kernel)[lnc_degree] -- LNC on the HOP caller,
+    NOT on the raw kernel object. See benchmarks/communication/nki_ops.py
+    for the failure mode of the alternative wrap_nki(kernel[lnc_degree]).
+    """
     kernel_fn = COLLECTIVE_MAP[coll]
-    kernel = kernel_fn[lnc_degree]
-    wrapped = wrap_nki(kernel)
+    wrapped = wrap_nki(kernel_fn)[lnc_degree]
     replica_group = ReplicaGroup([list(range(world_size))])
     if coll == "all_reduce" or coll == "all_to_all":
         def call(inp):
