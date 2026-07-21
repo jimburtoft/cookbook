@@ -1,0 +1,18 @@
+2026-Jul-21 18:26:28.244609 2978577:2978708  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 18:26:32.688286 2978577:2978708  WARN   NRT:nrta_tensor_read                        nrta_tensor_read currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+======================================================================
+LNC=2 NKI_LNC_DEGREE=2
+nki: 0.4.0+25407465723.g29063adb torch_neuronx: 2.11.3.0.1278+5013c208
+======================================================================
+
+--- Kernel A (trivial copy) ---
+  A (trivial copy): PASS (got 4.0)
+
+--- Kernel B (named out) ---
+  B (named out): PASS (got 4.0)
+
+--- Kernel C (two named + intermediate) ---
+  C (two named + intermediate): PASS (got 4.0)
+
+--- Kernel D (C + ncc.all_reduce, single rank) ---
+  D (C + ncc.all_reduce, single rank): FAIL with NCC_ILLC059 (compiler bug)

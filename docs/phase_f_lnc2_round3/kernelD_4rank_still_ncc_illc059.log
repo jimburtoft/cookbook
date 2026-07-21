@@ -1,0 +1,10 @@
+=== 2026-07-21T18:28:53+00:00 LNC=2 NPROC=4 ===
+rank=1/4 LNC=2 NKI_LNC=2
+rank=3/4 LNC=2 NKI_LNC=2
+rank=2/4 LNC=2 NKI_LNC=2
+rank=0/4 LNC=2 NKI_LNC=2
+2026-Jul-21 18:29:17.237166 2978981:2979037  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 18:29:17.256531 2978978:2979076  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 18:29:17.256749 2978979:2979073  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 18:29:17.336753 2978980:2979098  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+Kernel D distributed: FAIL with NCC_ILLC059
