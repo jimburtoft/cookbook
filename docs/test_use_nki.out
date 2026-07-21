@@ -1,0 +1,83 @@
+=== 2026-07-21T04:36:19+00:00 === Cookbook --use-nki test ===
+======================== FRAMEWORK path ========================
+2026-Jul-21 04:36:34.068927 1646368:1646420  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:34.069479 1646366:1646437  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:34.071008 1646364:1646461  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:34.071506 1646363:1646474  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:34.118719 1646367:1646499  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:34.138150 1646369:1646519  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:41.759553 1646365:1646546  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:41.762640 1646362:1646566  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+
+---- Performance of all_reduce on 8 devices ---------------------------------------------------------
+Size (Bytes)         Description               Duration (us)        Throughput (GBps)    BusBW (GBps)        
+----------------------------------------------------------------------------------------------------
+2026-Jul-21 04:36:42.1172692026-Jul-21 04:36:42.1172742026-Jul-21 04:36:42.1172862026-Jul-21 04:36:42.1172972026-Jul-21 04:36:42.1173012026-Jul-21 04:36:42.117303 1646365:1646546  WARN   NRT:nrta_tensor_copy                        2026-Jul-21 04:36:42.117309 1646362:1646566  WARN   NRT:nrta_tensor_copy                        2026-Jul-21 04:36:42.117352 1646366:1646437  WARN   NRT:nrta_tensor_copy                         1646369:1646519  WARN   NRT:nrta_tensor_copy                         1646364:1646461  WARN   NRT:nrta_tensor_copy                         1646363:1646474  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runti 1646368:1646420  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runti 1646367:1646499  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtinrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtinrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtinrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)me release.  (this log repeats as INFO level)me release.  (this log repeats as INFO level)me release.  (this log repeats as INFO level)
+me release.  (this log repeats as INFO level)
+me release.  (this log repeats as INFO level)
+
+
+
+
+
+64                   16x4                      5489.392             0.000                0.000               
+128                  32x4                      976.416              0.000                0.000               
+256                  64x4                      929.603              0.001                0.000               
+512                  128x4                     902.909              0.001                0.001               
+1024                 256x4                     969.323              0.002                0.002               
+2048                 512x4                     972.691              0.004                0.004               
+4096                 1024x4                    988.568              0.008                0.007               
+8192                 2048x4                    972.404              0.017                0.015               
+16384                4096x4                    976.732              0.034                0.029               
+32768                8192x4                    996.183              0.066                0.058               
+65536                16384x4                   987.134              0.133                0.116               
+131072               32768x4                   1019.516             0.257                0.225               
+262144               65536x4                   965.321              0.543                0.475               
+524288               131072x4                  1001.682             1.047                0.916               
+1048576              262144x4                  1044.035             2.009                1.758               
+2097152              524288x4                  1003.556             4.179                3.657               
+4194304              1048576x4                 970.084              8.647                7.566               
+8388608              2097152x4                 1032.965             16.242               14.212              
+16777216             4194304x4                 1233.277             27.208               23.807              
+
+======================== NKI path (--use-nki) ========================
+2026-Jul-21 04:36:57.069057 1646673:1646738  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:57.069327 1646676:1646745  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:57.118978 1646678:1646768  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:36:57.138189 1646680:1646788  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:37:06.332536 1646674:1646816  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:37:06.334090 1646677:1646845  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:37:06.334227 1646675:1646854  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+2026-Jul-21 04:37:06.336915 1646679:1646874  WARN   NRT:nrta_tensor_write                       nrta_tensor_write currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+
+---- Performance of all_reduce on 8 devices ---------------------------------------------------------
+Size (Bytes)         Description               Duration (us)        Throughput (GBps)    BusBW (GBps)        
+----------------------------------------------------------------------------------------------------
+2026-Jul-21 04:37:06.8641232026-Jul-21 04:37:06.8641272026-Jul-21 04:37:06.8641322026-Jul-21 04:37:06.8641362026-Jul-21 04:37:06.864138 1646678:1646768  WARN   NRT:nrta_tensor_copy                        2026-Jul-21 04:37:06.864164 1646673:1646738  WARN   NRT:nrta_tensor_copy                        2026-Jul-21 04:37:06.864190 1646676:1646745  WARN   NRT:nrta_tensor_copy                         1646674:1646816  WARN   NRT:nrta_tensor_copy                        2026-Jul-21 04:37:06.864246 1646677:1646845  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runti 1646680:1646788  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runti 1646675:1646854  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtinrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runti 1646679:1646874  WARN   NRT:nrta_tensor_copy                        nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)me release.  (this log repeats as INFO level)nrta_tensor_copy currently uses a synchronous implementation underneath. Asynchronous tensor I/O will be added in a future runtime release.  (this log repeats as INFO level)
+me release.  (this log repeats as INFO level)
+me release.  (this log repeats as INFO level)
+
+me release.  (this log repeats as INFO level)
+
+
+
+64                   16x4                      988.938              0.000                0.000               
+128                  32x4                      998.241              0.000                0.000               
+256                  64x4                      978.465              0.001                0.000               
+512                  128x4                     127.382              0.008                0.007               
+1024                 256x4                     132.051              0.016                0.014               
+2048                 512x4                     134.335              0.030                0.027               
+4096                 1024x4                    125.448              0.065                0.057               
+8192                 2048x4                    140.321              0.117                0.102               
+16384                4096x4                    130.794              0.251                0.219               
+32768                8192x4                    128.138              0.511                0.448               
+65536                16384x4                   128.698              1.018                0.891               
+131072               32768x4                   133.147              1.969                1.723               
+262144               65536x4                   135.368              3.873                3.389               
+524288               131072x4                  135.274              7.751                6.783               
+1048576              262144x4                  126.007              16.643               14.563              
+2097152              524288x4                  146.459              28.638               25.058              
+4194304              1048576x4                 163.848              51.197               44.798              
+8388608              2097152x4                 271.708              61.747               54.029              
+16777216             4194304x4                 487.289              68.859               60.252              
+=== exit=0 ===

@@ -80,6 +80,43 @@ The NKI kernel is slightly lower at the very top of the scan because the HBM ker
 
 The two paths cross at **~2-4 MB**: below that, NKI is a clear win; above that, framework and NKI are within a factor of 2 of each other and converge to the same peak.
 
+## Cookbook end-to-end integration
+
+The `--use-nki` flag was validated end-to-end through the full `run_all.py` scan on trn2.48xlarge WS=8 LNC=1. Both paths report from the same cookbook code, using the same tensor allocation, same `sync_all()` pattern, and same header. Speedup at each size (rounded to nearest 10 us):
+
+| Size (Bytes) | Framework (us) | NKI + fallback (us) | Speedup |
+|-------------:|---------------:|--------------------:|--------:|
+| 64        | 5489 | 989  | 5.5x  (first-call cold cache; NKI falls back to framework at < 128 elem) |
+| 128       | 976  | 998  | 0.98x (fallback, so equal) |
+| 256       | 930  | 978  | 0.95x (fallback) |
+| **512**   | **903**  | **127**  | **7.1x** |
+| **1 KB**  | **969**  | **132**  | **7.3x** |
+| **4 KB**  | **989**  | **125**  | **7.9x** |
+| **32 KB** | **996**  | **128**  | **7.8x** |
+| **256 KB**| **965**  | **135**  | **7.1x** |
+| **1 MB**  | **1044** | **126**  | **8.3x** |
+| **4 MB**  | **970**  | **164**  | **5.9x** |
+| 8 MB      | 1033 | 272  | 3.8x  |
+| 16 MB     | 1233 | 487  | 2.5x  |
+
+The `--use-nki` path automatically falls back to the framework at sizes below 128 fp32 elements (the NKI kernel's partition dim), so no user intervention is needed to run the same scan through both paths -- just add the flag. The `SkipSizeError` fallback shows up as the first 3 rows above, where framework and NKI durations are equal.
+
+Same pattern for `all_to_all --use-nki`:
+
+| Size (Bytes) | Framework (us) | NKI + fallback (us) | Speedup |
+|-------------:|---------------:|--------------------:|--------:|
+| 512   | 1178 | 143 | **8.2x** |
+| 1 KB  | 1252 | 132 | **9.5x** |
+| 4 KB  | 1144 | 129 | **8.9x** |
+| 32 KB | 1112 | 225 | 4.9x  |
+| 256 KB| 1208 | 132 | **9.2x** |
+| 1 MB  | 1146 | 131 | **8.7x** |
+| 4 MB  | 1245 | 140 | **8.9x** |
+| 8 MB  | 1182 | 221 | 5.4x  |
+| 16 MB | 1274 | 405 | 3.2x  |
+
+Full logs at `docs/test_use_nki.out` and `docs/test_a2a_nki.out`.
+
 ## Where the speedup comes from
 
 The framework path for a single `dist.all_reduce(tensor)` call goes roughly:
