@@ -1,0 +1,20 @@
+rank=2/4 local_rank=2 lnc=2 host=ip-172-31-21-199
+rank=0/4 local_rank=0 lnc=2 host=ip-172-31-21-199
+rank=1/4 local_rank=1 lnc=2 host=ip-172-31-21-199
+rank=3/4 local_rank=3 lnc=2 host=ip-172-31-21-199
+2026-Jul-21 16:24:13.0203 6894:6894 [2] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):232 CCOM WARN NET/OFI Failed to initialize rdma protocol
+2026-Jul-21 16:24:13.0205 6894:6894 [2] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):376 CCOM WARN NET/OFI aws-ofi-nccl initialization failed
+2026-Jul-21 16:24:13.0207 6894:6894 [2] ncclResult_t nccl_net_ofi_init(ncclDebugLogger_t):78 CCOM WARN NET/OFI Initializing plugin failed
+2026-Jul-21 16:24:13.0209 6894:6894 [2] net_plugin.cc:97 CCOM WARN OFI plugin initNet() failed is EFA enabled?
+2026-Jul-21 16:24:20.0234 6893:6893 [1] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):232 CCOM WARN NET/OFI Failed to initialize rdma protocol
+2026-Jul-21 16:24:20.0236 6893:6893 [1] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):376 CCOM WARN NET/OFI aws-ofi-nccl initialization failed
+2026-Jul-21 16:24:20.0238 6893:6893 [1] ncclResult_t nccl_net_ofi_init(ncclDebugLogger_t):78 CCOM WARN NET/OFI Initializing plugin failed
+2026-Jul-21 16:24:20.0240 6893:6893 [1] net_plugin.cc:97 CCOM WARN OFI plugin initNet() failed is EFA enabled?
+2026-Jul-21 16:24:20.0244 6892:6892 [0] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):232 CCOM WARN NET/OFI Failed to initialize rdma protocol
+2026-Jul-21 16:24:20.0246 6892:6892 [0] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):376 CCOM WARN NET/OFI aws-ofi-nccl initialization failed
+2026-Jul-21 16:24:20.0248 6892:6892 [0] ncclResult_t nccl_net_ofi_init(ncclDebugLogger_t):78 CCOM WARN NET/OFI Initializing plugin failed
+2026-Jul-21 16:24:20.0248 6895:6895 [3] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):232 CCOM WARN NET/OFI Failed to initialize rdma protocol
+2026-Jul-21 16:24:20.0250 6892:6892 [0] net_plugin.cc:97 CCOM WARN OFI plugin initNet() failed is EFA enabled?
+2026-Jul-21 16:24:20.0253 6895:6895 [3] int nccl_net_ofi_create_plugin(nccl_net_ofi_plugin_t**):376 CCOM WARN NET/OFI aws-ofi-nccl initialization failed
+2026-Jul-21 16:24:20.0255 6895:6895 [3] ncclResult_t nccl_net_ofi_init(ncclDebugLogger_t):78 CCOM WARN NET/OFI Initializing plugin failed
+2026-Jul-21 16:24:20.0257 6895:6895 [3] net_plugin.cc:97 CCOM WARN OFI plugin initNet() failed is EFA enabled?

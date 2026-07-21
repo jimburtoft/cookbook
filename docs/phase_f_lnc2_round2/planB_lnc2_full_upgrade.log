@@ -1,0 +1,273 @@
+[W721 17:03:29.234374128 OperatorEntry.cpp:208] Warning: Warning only once for all operators,  other operators may also be overridden.
+  Overriding a previously registered kernel for the same operator and the same dispatch key
+  operator: aten::gather.out(Tensor self, int dim, Tensor index, *, bool sparse_grad=False, Tensor(a!) out) -> Tensor(a!)
+    registered at /pytorch/build/aten/src/ATen/RegisterSchema.cpp:6
+  dispatch key: PrivateUse1
+  previous kernel: registered at /pytorch/build/aten/src/ATen/RegisterCPU_3.cpp:7637
+       new kernel: registered at NeuronDispatcher.cpp:0 (function operator())
+W0721 17:03:29.070000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/run.py:851] 
+W0721 17:03:29.070000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/run.py:851] *****************************************
+W0721 17:03:29.070000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/run.py:851] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0721 17:03:29.070000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/run.py:851] *****************************************
+[W721 17:03:31.431456392 OperatorEntry.cpp:208] Warning: Warning only once for all operators,  other operators may also be overridden.
+  Overriding a previously registered kernel for the same operator and the same dispatch key
+  operator: aten::gather.out(Tensor self, int dim, Tensor index, *, bool sparse_grad=False, Tensor(a!) out) -> Tensor(a!)
+    registered at /pytorch/build/aten/src/ATen/RegisterSchema.cpp:6
+  dispatch key: PrivateUse1
+  previous kernel: registered at /pytorch/build/aten/src/ATen/RegisterCPU_3.cpp:7637
+       new kernel: registered at NeuronDispatcher.cpp:0 (function operator())
+[W721 17:03:31.431614708 OperatorEntry.cpp:208] Warning: Warning only once for all operators,  other operators may also be overridden.
+  Overriding a previously registered kernel for the same operator and the same dispatch key
+  operator: aten::gather.out(Tensor self, int dim, Tensor index, *, bool sparse_grad=False, Tensor(a!) out) -> Tensor(a!)
+    registered at /pytorch/build/aten/src/ATen/RegisterSchema.cpp:6
+  dispatch key: PrivateUse1
+  previous kernel: registered at /pytorch/build/aten/src/ATen/RegisterCPU_3.cpp:7637
+       new kernel: registered at NeuronDispatcher.cpp:0 (function operator())
+[W721 17:03:31.432306913 OperatorEntry.cpp:208] Warning: Warning only once for all operators,  other operators may also be overridden.
+  Overriding a previously registered kernel for the same operator and the same dispatch key
+  operator: aten::gather.out(Tensor self, int dim, Tensor index, *, bool sparse_grad=False, Tensor(a!) out) -> Tensor(a!)
+    registered at /pytorch/build/aten/src/ATen/RegisterSchema.cpp:6
+  dispatch key: PrivateUse1
+  previous kernel: registered at /pytorch/build/aten/src/ATen/RegisterCPU_3.cpp:7637
+       new kernel: registered at NeuronDispatcher.cpp:0 (function operator())
+[W721 17:03:31.439871242 OperatorEntry.cpp:208] Warning: Warning only once for all operators,  other operators may also be overridden.
+  Overriding a previously registered kernel for the same operator and the same dispatch key
+  operator: aten::gather.out(Tensor self, int dim, Tensor index, *, bool sparse_grad=False, Tensor(a!) out) -> Tensor(a!)
+    registered at /pytorch/build/aten/src/ATen/RegisterSchema.cpp:6
+  dispatch key: PrivateUse1
+  previous kernel: registered at /pytorch/build/aten/src/ATen/RegisterCPU_3.cpp:7637
+       new kernel: registered at NeuronDispatcher.cpp:0 (function operator())
+rank=1/4 local_rank=1 lnc=2 host=ip-172-31-21-199
+rank=2/4 local_rank=2 lnc=2 host=ip-172-31-21-199
+rank=3/4 local_rank=3 lnc=2 host=ip-172-31-21-199
+rank=0/4 local_rank=0 lnc=2 host=ip-172-31-21-199
+2026-Jul-21 17:03:39.355082 33813:33844 ERROR  NEFF:neff_parse                              This NEFF (version: 2.0, features: 0x10000000) has been compiled by a newer version of Neuron compiler. Features supported by this Neuron Runtime: 0x7ffffff. Please update the aws-neuronx-runtime-lib package to the latest version.
+2026-Jul-21 17:03:39.359941 33813:33844 ERROR  NMGR:kmgr_load_nn_post_metrics               Failed to load NN: module.neff, err: 10
+2026-Jul-21 17:03:39.368694 33813:33844 ERROR   NRT:nrt_infodump                            Neuron runtime information - please include in any support request:
+2026-Jul-21 17:03:39.370909 33813:33844 ERROR   NRT:nrt_infodump                            ------------->8------------[ cut here ]------------>8-------------
+2026-Jul-21 17:03:39.373001 33813:33844 ERROR   NRT:nrt_infodump                            NRT version: 2.32.19.0 (f98095770e466b1adda67d496430fd607511113e)
+2026-Jul-21 17:03:39.374999 33813:33844 ERROR   NRT:nrt_infodump                            Embedded FW version: 1.22.0.0 (8d9f5a1c78551eb3823587d6bb9575f9011314da) loaded from "libnrtucode_extisa.so"
+2026-Jul-21 17:03:39.377573 33813:33844 ERROR   NRT:nrt_infodump                            CCOM version: 2.32.16.0- (compat 92)
+2026-Jul-21 17:03:39.379617 33813:33844 ERROR   NRT:nrt_infodump                            NCFW version: 2.32.4.0 (943312e67265addc0dd5dbe9d2b2c784f2faa8f0)
+2026-Jul-21 17:03:39.381647 33813:33844 ERROR   NRT:nrt_infodump                            Instance ID: i-01fb140c0ea3080e0
+2026-Jul-21 17:03:39.383254 33813:33844 ERROR   NRT:nrt_infodump                            Cluster ID: N/A
+2026-Jul-21 17:03:39.384516 33813:33844 ERROR   NRT:nrt_infodump                            Kernel: Linux 6.17.0-1019-aws #19~24.04.1-Ubuntu SMP Tue Jun 23 18:53:06 UTC 2026
+2026-Jul-21 17:03:39.386653 33813:33844 ERROR   NRT:nrt_infodump                            Nodename: ip-172-31-21-199
+2026-Jul-21 17:03:39.388168 33813:33844 ERROR   NRT:nrt_infodump                            Driver version: 2.28.0.0
+
+2026-Jul-21 17:03:39.389943 33813:33844 ERROR   NRT:nrt_infodump                            Failure: NRT_UNSUPPORTED_NEFF_VERSION in nrt_load_util
+2026-Jul-21 17:03:39.391898 33813:33844 ERROR   NRT:nrt_infodump                            Visible cores: 1
+2026-Jul-21 17:03:39.393605 33813:33844 ERROR   NRT:nrt_infodump                            Environment:
+2026-Jul-21 17:03:39.394886 33813:33844 ERROR   NRT:nrt_infodump                                NEURON_LOGICAL_NC_CONFIG=2
+2026-Jul-21 17:03:39.396465 33813:33844 ERROR   NRT:nrt_infodump                                NEURON_LAUNCH_BLOCKING=0
+2026-Jul-21 17:03:39.397951 33813:33844 ERROR   NRT:nrt_infodump                                NEURON_RT_ALLOW_LEGACY_NEFF=1
+2026-Jul-21 17:03:39.399588 33813:33844 ERROR   NRT:nrt_infodump                                NEURON_RT_DBG_ZEROCOPY=1
+2026-Jul-21 17:03:39.401962 33813:33844 ERROR   NRT:nrt_infodump                                NEURON_RT_MAP_HBM=1
+2026-Jul-21 17:03:39.403658 33813:33844 ERROR   NRT:nrt_infodump                                NEURON_RT_DISABLE_EXECUTION_BARRIER=0
+2026-Jul-21 17:03:39.405278 33813:33844 ERROR   NRT:nrt_infodump                                NEURON_RT_ROOT_COMM_ID=ip-172-31-21-199.sa-east-1.compute.internal:47991
+2026-Jul-21 17:03:39.408120 33813:33844 ERROR   NRT:nrt_infodump                            -------------8<-----------[ cut to here ]-----------8<------------
+2026-Jul-21 17:03:39.641571 33812:33860 ERROR  NEFF:neff_parse                              This NEFF (version: 2.0, features: 0x10000000) has been compiled by a newer version of Neuron compiler. Features supported by this Neuron Runtime: 0x7ffffff. Please update the aws-neuronx-runtime-lib package to the latest version.
+2026-Jul-21 17:03:39.646306 33812:33860 ERROR  NMGR:kmgr_load_nn_post_metrics               Failed to load NN: module.neff, err: 10
+2026-Jul-21 17:03:39.648256 33812:33860 ERROR   NRT:nrt_infodump                            Neuron runtime information - please include in any support request:
+2026-Jul-21 17:03:39.650078 33814:33879 ERROR  NEFF:neff_parse                              This NEFF (version: 2.0, features: 0x10000000) has been compiled by a newer version of Neuron compiler. Features supported by this Neuron Runtime: 0x7ffffff. Please update the aws-neuronx-runtime-lib package to the latest version.
+2026-Jul-21 17:03:39.650262 33812:33860 ERROR   NRT:nrt_infodump                            ------------->8------------[ cut here ]------------>8-------------
+2026-Jul-21 17:03:39.653775 33814:33879 ERROR  NMGR:kmgr_load_nn_post_metrics               Failed to load NN: module.neff, err: 10
+2026-Jul-21 17:03:39.655495 33812:33860 ERROR   NRT:nrt_infodump                            NRT version: 2.32.19.0 (f98095770e466b1adda67d496430fd607511113e)
+2026-Jul-21 17:03:39.656917 33814:33879 ERROR   NRT:nrt_infodump                            Neuron runtime information - please include in any support request:
+2026-Jul-21 17:03:39.658656 33812:33860 ERROR   NRT:nrt_infodump                            Embedded FW version: 1.22.0.0 (8d9f5a1c78551eb3823587d6bb9575f9011314da) loaded from "libnrtucode_extisa.so"
+2026-Jul-21 17:03:39.660399 33814:33879 ERROR   NRT:nrt_infodump                            ------------->8------------[ cut here ]------------>8-------------
+2026-Jul-21 17:03:39.662661 33812:33860 ERROR   NRT:nrt_infodump                            CCOM version: 2.32.16.0- (compat 92)
+2026-Jul-21 17:03:39.664401 33814:33879 ERROR   NRT:nrt_infodump                            NRT version: 2.32.19.0 (f98095770e466b1adda67d496430fd607511113e)
+2026-Jul-21 17:03:39.665797 33812:33860 ERROR   NRT:nrt_infodump                            NCFW version: 2.32.4.0 (943312e67265addc0dd5dbe9d2b2c784f2faa8f0)
+2026-Jul-21 17:03:39.667527 33814:33879 ERROR   NRT:nrt_infodump                            Embedded FW version: 1.22.0.0 (8d9f5a1c78551eb3823587d6bb9575f9011314da) loaded from "libnrtucode_extisa.so"
+2026-Jul-21 17:03:39.669259 33812:33860 ERROR   NRT:nrt_infodump                            Instance ID: i-01fb140c0ea3080e0
+2026-Jul-21 17:03:39.671510 33814:33879 ERROR   NRT:nrt_infodump                            CCOM version: 2.32.16.0- (compat 92)
+2026-Jul-21 17:03:39.673510 33812:33860 ERROR   NRT:nrt_infodump                            Cluster ID: N/A
+2026-Jul-21 17:03:39.674251 33814:33879 ERROR   NRT:nrt_infodump                            NCFW version: 2.32.4.0 (943312e67265addc0dd5dbe9d2b2c784f2faa8f0)
+2026-Jul-21 17:03:39.675437 33812:33860 ERROR   NRT:nrt_infodump                            Kernel: Linux 6.17.0-1019-aws #19~24.04.1-Ubuntu SMP Tue Jun 23 18:53:06 UTC 2026
+2026-Jul-21 17:03:39.677133 33814:33879 ERROR   NRT:nrt_infodump                            Instance ID: i-01fb140c0ea3080e0
+2026-Jul-21 17:03:39.679068 33812:33860 ERROR   NRT:nrt_infodump                            Nodename: ip-172-31-21-199
+2026-Jul-21 17:03:39.680403 33814:33879 ERROR   NRT:nrt_infodump                            Cluster ID: N/A
+2026-Jul-21 17:03:39.681702 33812:33860 ERROR   NRT:nrt_infodump                            Driver version: 2.28.0.0
+
+2026-Jul-21 17:03:39.682835 33814:33879 ERROR   NRT:nrt_infodump                            Kernel: Linux 6.17.0-1019-aws #19~24.04.1-Ubuntu SMP Tue Jun 23 18:53:06 UTC 2026
+2026-Jul-21 17:03:39.684280 33812:33860 ERROR   NRT:nrt_infodump                            Failure: NRT_UNSUPPORTED_NEFF_VERSION in nrt_load_util
+2026-Jul-21 17:03:39.686204 33814:33879 ERROR   NRT:nrt_infodump                            Nodename: ip-172-31-21-199
+2026-Jul-21 17:03:39.687813 33812:33860 ERROR   NRT:nrt_infodump                            Visible cores: 0
+2026-Jul-21 17:03:39.689102 33814:33879 ERROR   NRT:nrt_infodump                            Driver version: 2.28.0.0
+
+2026-Jul-21 17:03:39.691656 33812:33860 ERROR   NRT:nrt_infodump                            Environment:
+2026-Jul-21 17:03:39.692631 33814:33879 ERROR   NRT:nrt_infodump                            Failure: NRT_UNSUPPORTED_NEFF_VERSION in nrt_load_util
+2026-Jul-21 17:03:39.693531 33812:33860 ERROR   NRT:nrt_infodump                                NEURON_LOGICAL_NC_CONFIG=2
+2026-Jul-21 17:03:39.695139 33814:33879 ERROR   NRT:nrt_infodump                            Visible cores: 2
+2026-Jul-21 17:03:39.696470 33812:33860 ERROR   NRT:nrt_infodump                                NEURON_LAUNCH_BLOCKING=0
+2026-Jul-21 17:03:39.699045 33814:33879 ERROR   NRT:nrt_infodump                            Environment:
+2026-Jul-21 17:03:39.699341 33812:33860 ERROR   NRT:nrt_infodump                                NEURON_RT_ALLOW_LEGACY_NEFF=1
+2026-Jul-21 17:03:39.700133 33814:33879 ERROR   NRT:nrt_infodump                                NEURON_LOGICAL_NC_CONFIG=2
+2026-Jul-21 17:03:39.701515 33812:33860 ERROR   NRT:nrt_infodump                                NEURON_RT_DBG_ZEROCOPY=1
+2026-Jul-21 17:03:39.702818 33814:33879 ERROR   NRT:nrt_infodump                                NEURON_LAUNCH_BLOCKING=0
+2026-Jul-21 17:03:39.704115 33812:33860 ERROR   NRT:nrt_infodump                                NEURON_RT_MAP_HBM=1
+2026-Jul-21 17:03:39.706340 33814:33879 ERROR   NRT:nrt_infodump                                NEURON_RT_ALLOW_LEGACY_NEFF=1
+2026-Jul-21 17:03:39.706657 33812:33860 ERROR   NRT:nrt_infodump                                NEURON_RT_DISABLE_EXECUTION_BARRIER=0
+2026-Jul-21 17:03:39.708017 33814:33879 ERROR   NRT:nrt_infodump                                NEURON_RT_DBG_ZEROCOPY=1
+2026-Jul-21 17:03:39.709473 33812:33860 ERROR   NRT:nrt_infodump                                NEURON_RT_ROOT_COMM_ID=ip-172-31-21-199.sa-east-1.compute.internal:47991
+2026-Jul-21 17:03:39.710769 33814:33879 ERROR   NRT:nrt_infodump                                NEURON_RT_MAP_HBM=1
+2026-Jul-21 17:03:39.712639 33812:33860 ERROR   NRT:nrt_infodump                            -------------8<-----------[ cut to here ]-----------8<------------
+2026-Jul-21 17:03:39.714033 33814:33879 ERROR   NRT:nrt_infodump                                NEURON_RT_DISABLE_EXECUTION_BARRIER=0
+2026-Jul-21 17:03:39.724454 33814:33879 ERROR   NRT:nrt_infodump                                NEURON_RT_ROOT_COMM_ID=ip-172-31-21-199.sa-east-1.compute.internal:47991
+2026-Jul-21 17:03:39.726648 33814:33879 ERROR   NRT:nrt_infodump                            -------------8<-----------[ cut to here ]-----------8<------------
+2026-Jul-21 17:03:40.106985 33813:33844 ERROR   NRT:nrt_load                                Failed to load nrt model
+Traceback (most recent call last):
+  File "/home/ubuntu/smoke_nki_allreduce.py", line 94, in <module>
+    main()
+  File "/home/ubuntu/smoke_nki_allreduce.py", line 26, in main
+    dist.init_process_group(backend="neuron")
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 97, in wrapper
+    func_return = func(*args, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 1838, in init_process_group
+    default_pg, _ = _new_process_group_helper(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 2164, in _new_process_group_helper
+    backend_class = creator_fn(
+                    ^^^^^^^^^^^
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 54, in _create_neuron_process_group
+    return ProcessGroupNeuron(prefix_store, rank, size, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 458, in __init__
+    _neuron_runtime_setup(rank, size, store)
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 334, in _neuron_runtime_setup
+    torch_neuronx._C._nrt_barrier(0, rank, size)
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 1263, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+RuntimeError: NRT Execution error occurred on Neuron for operation=nki_kernel_global
+error message="NRT EXECUTION FAILED: Failed to load model, Unsupported NEFF version"
+Note: Neuron errors are reported asynchronously. The Python traceback shows where the
+error was detected (synchronization point), not necessarily where the failing operation
+was dispatched. For synchronous error reporting, set NEURON_LAUNCH_BLOCKING=1.
+2026-Jul-21 17:03:40.433792 33814:33879 ERROR   NRT:nrt_load                                Failed to load nrt model
+Traceback (most recent call last):
+  File "/home/ubuntu/smoke_nki_allreduce.py", line 94, in <module>
+    main()
+  File "/home/ubuntu/smoke_nki_allreduce.py", line 26, in main
+    dist.init_process_group(backend="neuron")
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 97, in wrapper
+    func_return = func(*args, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 1838, in init_process_group
+    default_pg, _ = _new_process_group_helper(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 2164, in _new_process_group_helper
+2026-Jul-21 17:03:40.433889 33812:33860 ERROR   NRT:nrt_load                                Failed to load nrt model
+    backend_class = creator_fn(
+                    ^^^^^^^^^^^
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 54, in _create_neuron_process_group
+    return ProcessGroupNeuron(prefix_store, rank, size, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 458, in __init__
+    _neuron_runtime_setup(rank, size, store)
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 334, in _neuron_runtime_setup
+    torch_neuronx._C._nrt_barrier(0, rank, size)
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 1263, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+RuntimeError: NRT Execution error occurred on Neuron for operation=nki_kernel_global
+error message="NRT EXECUTION FAILED: Failed to load model, Unsupported NEFF version"
+Note: Neuron errors are reported asynchronously. The Python traceback shows where the
+error was detected (synchronization point), not necessarily where the failing operation
+was dispatched. For synchronous error reporting, set NEURON_LAUNCH_BLOCKING=1.
+Traceback (most recent call last):
+  File "/home/ubuntu/smoke_nki_allreduce.py", line 94, in <module>
+    main()
+  File "/home/ubuntu/smoke_nki_allreduce.py", line 26, in main
+    dist.init_process_group(backend="neuron")
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 97, in wrapper
+    func_return = func(*args, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 1838, in init_process_group
+    default_pg, _ = _new_process_group_helper(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 2164, in _new_process_group_helper
+    backend_class = creator_fn(
+                    ^^^^^^^^^^^
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 54, in _create_neuron_process_group
+    return ProcessGroupNeuron(prefix_store, rank, size, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 458, in __init__
+    _neuron_runtime_setup(rank, size, store)
+  File "/home/ubuntu/workspace/torch_neuron_eager/torch_neuronx/distributed/backend.py", line 334, in _neuron_runtime_setup
+    torch_neuronx._C._nrt_barrier(0, rank, size)
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 1263, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+RuntimeError: NRT Execution error occurred on Neuron for operation=nki_kernel_global
+error message="NRT EXECUTION FAILED: Failed to load model, Unsupported NEFF version"
+Note: Neuron errors are reported asynchronously. The Python traceback shows where the
+error was detected (synchronization point), not necessarily where the failing operation
+was dispatched. For synchronous error reporting, set NEURON_LAUNCH_BLOCKING=1.
+W0721 17:03:41.256000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/api.py:1012] Sending process 33812 closing signal SIGTERM
+W0721 17:03:41.256000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/api.py:1012] Sending process 33814 closing signal SIGTERM
+W0721 17:03:41.256000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/api.py:1012] Sending process 33815 closing signal SIGTERM
+E0721 17:03:46.195000 33797 workspace/native_venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/api.py:986] failed (exitcode: 1) local_rank: 1 (pid: 33813) of binary: /home/ubuntu/workspace/native_venv/bin/python3
+Traceback (most recent call last):
+  File "/home/ubuntu/workspace/native_venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/run.py", line 990, in main
+    run(args)
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/run.py", line 981, in run
+    elastic_launch(
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/workspace/native_venv/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/home/ubuntu/smoke_nki_allreduce.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-07-21_17:03:46
+  host      : ip-172-31-21-199.sa-east-1.compute.internal
+  rank      : 0 (local_rank: 0)
+  exitcode  : -15 (pid: 33812)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 33812
+[2]:
+  time      : 2026-07-21_17:03:46
+  host      : ip-172-31-21-199.sa-east-1.compute.internal
+  rank      : 2 (local_rank: 2)
+  exitcode  : -15 (pid: 33814)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 33814
+[3]:
+  time      : 2026-07-21_17:03:46
+  host      : ip-172-31-21-199.sa-east-1.compute.internal
+  rank      : 3 (local_rank: 3)
+  exitcode  : -15 (pid: 33815)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 33815
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-07-21_17:03:41
+  host      : ip-172-31-21-199.sa-east-1.compute.internal
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 33813)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

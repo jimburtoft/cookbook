@@ -1,0 +1,394 @@
+"""Build-time configuration - auto-generated, do not edit."""
+
+# This value is baked in at build time
+BUILD_TYPE = "DEV"
+
+# Build-time defaults based on release flag
+if BUILD_TYPE == "RELEASE":
+    # Release defaults - optimized for production
+    DEFAULT_SYNC_MODE = "0"  # Async
+    DEFAULT_FALLBACK_ONLY_FOR_UNIMPLEMENTED = "0"
+    DEFAULT_MLIR_ATEN_OPS = "1"
+    DEFAULT_RETAIN_DEVICE_MODE = "0"
+else:
+    # Development defaults - optimized for debugging
+    DEFAULT_SYNC_MODE = "0"  # Async
+    DEFAULT_FALLBACK_ONLY_FOR_UNIMPLEMENTED = "1"
+    DEFAULT_MLIR_ATEN_OPS = "1"
+    DEFAULT_RETAIN_DEVICE_MODE = "0"
+
+Using Bazel Build for C++ Extension
+running build_ext
+[TIMING] Starting Bazel Extension Build...
+running generate_proto
+bazel build //:_C.so --symlink_prefix=build/temp.linux-x86_64-cpython-312/bazel- --@rules_python//python/config_settings:python_version=3.12 --action_env=PYTHON_VERSION=3.12
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+INFO: Invocation ID: f92df410-87e1-4d8c-b9e1-6da7fbb037f3
+INFO: Options provided by the client:
+  Inherited 'common' options: --isatty=0 --terminal_columns=80
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  Inherited 'common' options: --enable_bzlmod --enable_workspace --registry=https://raw.githubusercontent.com/bazelbuild/bazel-central-registry/main/
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  'build' options: --announce_rc --enable_platform_specific_config --experimental_cc_shared_library --action_env=PATH --action_env=LD_LIBRARY_PATH --action_env=CC=gcc --action_env=CXX=g++ --spawn_strategy=local --genrule_strategy=local --linkopt=-lz --copt=-O2 --copt=-DNDEBUG --action_env=PYTORCH_VERSION=2.12.0 --action_env=PYTORCH_USE_EXTERNAL=0 --action_env=NRT_LOCAL_PATH=/opt/aws/neuron --local_cpu_resources=HOST_CPUS*0.8 --disk_cache=~/.cache/bazel-torch-neuronx
+INFO: Found applicable config definition build:linux in file /home/ubuntu/torch-neuronx/.bazelrc: --config=posix
+INFO: Found applicable config definition build:posix in file /home/ubuntu/torch-neuronx/.bazelrc: --copt=-Wno-sign-compare --copt=-Wall --copt=-Wno-error=attributes --cxxopt=-std=c++20 --host_cxxopt=-std=c++20
+Computing main repo mapping: 
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+Loading: 
+Loading: 0 packages loaded
+Analyzing: target //:_C.so (0 packages loaded, 0 targets configured)
+Analyzing: target //:_C.so (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //:_C.so (0 packages loaded, 0 targets configured).
+[3,254 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 1s local, disk-cache ... (12 actions, 10 running)
+[3,254 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 11s local, disk-cache ... (12 actions, 10 running)
+[3,254 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 16s local, disk-cache ... (12 actions, 11 running)
+[3,279 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 17s local, disk-cache ... (12 actions, 11 running)
+[3,286 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 18s local, disk-cache ... (12 actions, 10 running)
+[3,291 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 19s local, disk-cache ... (12 actions, 11 running)
+[3,292 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 21s local, disk-cache ... (12 actions, 10 running)
+[3,292 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 26s local, disk-cache ... (12 actions, 11 running)
+INFO: From Compiling torch_neuronx/csrc/core/dispatch/NeuronDispatcher.cpp:
+In file included from torch_neuronx/csrc/core/dispatch/NeuronDispatcher.cpp:20:
+./torch_neuronx/csrc/core/dispatch/DispatchUtils.h:378:8: warning: 'torch_neuronx::dispatch::PyArgsKwargs' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::PyArgsKwargs::args' [-Wattributes]
+  378 | struct PyArgsKwargs {
+      |        ^~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/DispatchUtils.h:378:8: warning: 'torch_neuronx::dispatch::PyArgsKwargs' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::PyArgsKwargs::kwargs' [-Wattributes]
+In file included from ./torch_neuronx/csrc/core/dispatch/OutputProcessing.h:11,
+                 from torch_neuronx/csrc/core/dispatch/NeuronDispatcher.cpp:22:
+./torch_neuronx/csrc/core/dispatch/NeuronDispatcher.h:87:8: warning: 'torch_neuronx::dispatch::OpRegistration' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::OpRegistration::python_wrapper' [-Wattributes]
+   87 | struct OpRegistration {
+      |        ^~~~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/NeuronDispatcher.h:87:8: warning: 'torch_neuronx::dispatch::OpRegistration' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::OpRegistration::lower_func' [-Wattributes]
+torch_neuronx/csrc/core/dispatch/NeuronDispatcher.cpp:37:8: warning: 'torch_neuronx::dispatch::DispatchContextGuard' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::DispatchContextGuard::ctx_' [-Wattributes]
+   37 | struct DispatchContextGuard {
+      |        ^~~~~~~~~~~~~~~~~~~~
+torch_neuronx/csrc/core/dispatch/NeuronDispatcher.cpp: In static member function 'static void torch_neuronx::dispatch::NeuronDispatcher::DispatchIndexImpl(const c10::OperatorHandle&, c10::DispatchKeySet, torch::jit::Stack*, const torch_neuronx::dispatch::OpRegistration&)':
+torch_neuronx/csrc/core/dispatch/NeuronDispatcher.cpp:1380:10: warning: variable 'has_bool_index' set but not used [-Wunused-but-set-variable]
+ 1380 |     bool has_bool_index = false;
+      |          ^~~~~~~~~~~~~~
+[3,294 / 3,365] Compiling torch_neuronx/csrc/core/concatenation/ConcatenationCore.cpp; 27s local, disk-cache ... (12 actions, 11 running)
+[3,295 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/Utils/Utils.cpp; 12s local, disk-cache ... (12 actions, 10 running)
+INFO: From Compiling third_party/torch-mlir/lib/Dialect/Torch/Utils/Utils.cpp:
+third_party/torch-mlir/lib/Dialect/Torch/Utils/Utils.cpp: In function 'void mlir::torch::Torch::computeBroadcastShape(mlir::PatternRewriter&, mlir::Location, llvm::ArrayRef<mlir::Value>, llvm::SmallVector<long int>&, llvm::SmallVector<mlir::Value>&)':
+third_party/torch-mlir/lib/Dialect/Torch/Utils/Utils.cpp:540:42: warning: '*(const mlir::Value*)((char*)&sizeInputs + offsetof(llvm::SmallVector<mlir::Value, 6>,llvm::SmallVector<mlir::Value, 6>::<unnamed>.llvm::SmallVectorStorage<mlir::Value, 6>::InlineElts[0])).mlir::Value::impl' may be used uninitialized [-Wmaybe-uninitialized]
+  540 |     Value maxShapeVal = sizeInputs.front();
+      |                                          ^
+third_party/torch-mlir/lib/Dialect/Torch/Utils/Utils.cpp:527:24: note: 'sizeInputs' declared here
+  527 |     SmallVector<Value> sizeInputs;
+      |                        ^~~~~~~~~~
+[3,296 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 14s local, disk-cache ... (12 actions, 10 running)
+[3,296 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 15s local, disk-cache ... (12 actions, 11 running)
+[3,298 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 17s local, disk-cache ... (12 actions, 11 running)
+[3,299 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 18s local, disk-cache ... (12 actions, 10 running)
+[3,300 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 24s local, disk-cache ... (11 actions, 10 running)
+[3,300 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 26s local, disk-cache ... (12 actions, 10 running)
+[3,300 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 27s local, disk-cache ... (12 actions, 11 running)
+[3,302 / 3,365] Compiling torch_neuronx/csrc/core/OperationExecutionEngine.cpp; 28s local, disk-cache ... (12 actions, 11 running)
+[3,305 / 3,365] Compiling torch_neuronx/csrc/core/NeuronBindings.cpp; 29s local, disk-cache ... (12 actions, 10 running)
+[3,305 / 3,365] Compiling torch_neuronx/csrc/core/NeuronBindings.cpp; 34s local, disk-cache ... (12 actions, 11 running)
+INFO: From Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchOps.cpp:
+third_party/torch-mlir/lib/Dialect/Torch/IR/TorchOps.cpp: In member function 'mlir::OpFoldResult mlir::torch::Torch::AtenDivFloatOp::fold(FoldAdaptor)':
+third_party/torch-mlir/lib/Dialect/Torch/IR/TorchOps.cpp:4806:27: warning: 'lhs' may be used uninitialized [-Wmaybe-uninitialized]
+ 4806 |     return getF64FloatAttr(getContext(), lhs / rhs);
+      |            ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+third_party/torch-mlir/lib/Dialect/Torch/IR/TorchOps.cpp:4798:10: note: 'lhs' was declared here
+ 4798 |   double lhs, rhs;
+      |          ^~~
+INFO: From Compiling torch_neuronx/csrc/core/NeuronBindings.cpp:
+In file included from torch_neuronx/csrc/core/NeuronBindings.cpp:35:
+./torch_neuronx/csrc/core/dispatch/DispatchUtils.h:378:8: warning: 'torch_neuronx::dispatch::PyArgsKwargs' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::PyArgsKwargs::args' [-Wattributes]
+  378 | struct PyArgsKwargs {
+      |        ^~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/DispatchUtils.h:378:8: warning: 'torch_neuronx::dispatch::PyArgsKwargs' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::PyArgsKwargs::kwargs' [-Wattributes]
+In file included from ./torch_neuronx/csrc/core/NeuronHooksInterface.h:3,
+                 from torch_neuronx/csrc/core/NeuronBindings.cpp:40:
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:47:16: warning: use of 'std::hardware_destructive_interference_size' [-Winterference-size]
+   47 | struct alignas(hardware_destructive_interference_size) FreeBlockList {
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:47:16: note: its value can vary between compiler versions or with different '-mtune' or '-mcpu' flags
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:47:16: note: if this use is part of a public ABI, change it to instead use a constant variable you define
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:47:16: note: the default value for the current CPU tuning is 64 bytes
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:47:16: note: you can stabilize this value with '--param hardware_destructive_interference_size=64', or disable this warning with '-Wno-interference-size'
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:130:16: warning: use of 'std::hardware_destructive_interference_size' [-Winterference-size]
+  130 | struct alignas(hardware_destructive_interference_size) HostStatsStaged {
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:236:11: warning: use of 'std::hardware_destructive_interference_size' [-Winterference-size]
+  236 |   alignas(hardware_destructive_interference_size) std::mutex blocks_mutex_;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:241:11: warning: use of 'std::hardware_destructive_interference_size' [-Winterference-size]
+  241 |   alignas(hardware_destructive_interference_size) std::vector<FreeBlockList<B_>> free_list_ =
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:245:11: warning: use of 'std::hardware_destructive_interference_size' [-Winterference-size]
+  245 |   alignas(hardware_destructive_interference_size) std::mutex events_mutex_;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:931:11: warning: use of 'std::hardware_destructive_interference_size' [-Winterference-size]
+  931 |   alignas(hardware_destructive_interference_size) mutable std::shared_mutex instance_mutex_;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/ATen/core/CachingHostAllocator.h:962:11: warning: use of 'std::hardware_destructive_interference_size' [-Winterference-size]
+  962 |   alignas(hardware_destructive_interference_size) HostStatsStaged stats_;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ./torch_neuronx/csrc/distributed/NeuronBackend.h:7,
+                 from torch_neuronx/csrc/core/NeuronBindings.cpp:55:
+./torch_neuronx/csrc/core/dispatch/NeuronDispatcher.h:87:8: warning: 'torch_neuronx::dispatch::OpRegistration' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::OpRegistration::python_wrapper' [-Wattributes]
+   87 | struct OpRegistration {
+      |        ^~~~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/NeuronDispatcher.h:87:8: warning: 'torch_neuronx::dispatch::OpRegistration' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::OpRegistration::lower_func' [-Wattributes]
+In file included from torch_neuronx/csrc/core/NeuronBindings.cpp:84:
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::stablehlo_bytes' [-Wattributes]
+   24 | struct LoweringResult {
+      |        ^~~~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::output_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::original_output_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::input_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::kw_input_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::inferred_output_dtypes' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::error' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::nki_return_types' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::nki_operand_output_aliases' [-Wattributes]
+In file included from bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/torch/csrc/autograd/python_variable.h:9,
+                 from torch_neuronx/csrc/core/NeuronBindings.cpp:7:
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::dispatch::LoweringResult>':
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:82:49:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::dispatch::LoweringResult>' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+ 2042 | class class_ : public detail::generic_type {
+      |       ^~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2106:89:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2218:94:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2228:95:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::dispatch::LoweringResult; options = {}]':
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:82:49:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::dispatch::LoweringResult>::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::dispatch::LoweringResult>::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+ 2140 |             with_internals([&](internals &internals) {
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2141 |                 auto &instances = record.module_local ? get_local_internals().registered_types_cpp
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2142 |                                                       : internals.registered_types_cpp;
+      |                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2143 |                 instances[std::type_index(typeid(type_alias))]
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2144 |                     = instances[std::type_index(typeid(type))];
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2145 |             });
+      |             ~               
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::distributed::NeuronWork; options = {c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> >}]':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2106:89:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::distributed::NeuronWatchdog; options = {std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> >}]':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2218:94:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::distributed::NeuronBackend; options = {c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> >}]':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2228:95:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+[3,312 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 36s local, disk-cache ... (12 actions, 10 running)
+[3,313 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 37s local, disk-cache ... (12 actions, 10 running)
+[3,313 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 39s local, disk-cache ... (12 actions, 11 running)
+[3,316 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 41s local, disk-cache ... (12 actions, 10 running)
+[3,317 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 43s local, disk-cache ... (12 actions, 10 running)
+[3,317 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 49s local, disk-cache ... (12 actions, 11 running)
+[3,319 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 50s local, disk-cache ... (12 actions, 11 running)
+[3,325 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 52s local, disk-cache ... (12 actions, 10 running)
+[3,327 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 53s local, disk-cache ... (12 actions, 11 running)
+[3,331 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 55s local, disk-cache ... (12 actions, 10 running)
+[3,332 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 56s local, disk-cache ... (12 actions, 10 running)
+[3,333 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 58s local, disk-cache ... (12 actions, 10 running)
+[3,333 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 60s local, disk-cache ... (12 actions, 11 running)
+[3,334 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 62s local, disk-cache ... (12 actions, 10 running)
+[3,335 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 64s local, disk-cache ... (12 actions, 10 running)
+[3,336 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 65s local, disk-cache ... (12 actions, 10 running)
+[3,336 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 68s local, disk-cache ... (12 actions, 11 running)
+[3,341 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 70s local, disk-cache ... (12 actions, 10 running)
+[3,341 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 73s local, disk-cache ... (12 actions, 11 running)
+[3,342 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 75s local, disk-cache ... (12 actions, 10 running)
+[3,345 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 76s local, disk-cache ... (12 actions, 10 running)
+[3,345 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 80s local, disk-cache ... (12 actions, 11 running)
+[3,346 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 82s local, disk-cache ... (12 actions, 10 running)
+[3,347 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 84s local, disk-cache ... (12 actions, 10 running)
+[3,347 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 85s local, disk-cache ... (12 actions, 11 running)
+[3,348 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 86s local, disk-cache ... (12 actions, 11 running)
+[3,349 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 88s local, disk-cache ... (12 actions, 10 running)
+[3,349 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 93s local, disk-cache ... (12 actions, 11 running)
+[3,353 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 94s local, disk-cache ... (11 actions running)
+INFO: From Compiling torch_neuronx/csrc/core/NeuronBindings.cpp:
+In file included from torch_neuronx/csrc/core/NeuronBindings.cpp:35:
+./torch_neuronx/csrc/core/dispatch/DispatchUtils.h:378:8: warning: 'torch_neuronx::dispatch::PyArgsKwargs' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::PyArgsKwargs::args' [-Wattributes]
+  378 | struct PyArgsKwargs {
+      |        ^~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/DispatchUtils.h:378:8: warning: 'torch_neuronx::dispatch::PyArgsKwargs' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::PyArgsKwargs::kwargs' [-Wattributes]
+In file included from ./torch_neuronx/csrc/distributed/NeuronBackend.h:7,
+                 from torch_neuronx/csrc/core/NeuronBindings.cpp:55:
+./torch_neuronx/csrc/core/dispatch/NeuronDispatcher.h:87:8: warning: 'torch_neuronx::dispatch::OpRegistration' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::OpRegistration::python_wrapper' [-Wattributes]
+   87 | struct OpRegistration {
+      |        ^~~~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/NeuronDispatcher.h:87:8: warning: 'torch_neuronx::dispatch::OpRegistration' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::OpRegistration::lower_func' [-Wattributes]
+In file included from torch_neuronx/csrc/core/NeuronBindings.cpp:84:
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::stablehlo_bytes' [-Wattributes]
+   24 | struct LoweringResult {
+      |        ^~~~~~~~~~~~~~
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::output_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::original_output_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::input_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::kw_input_specs' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::inferred_output_dtypes' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::error' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::nki_return_types' [-Wattributes]
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:24:8: warning: 'torch_neuronx::dispatch::LoweringResult' declared with greater visibility than the type of its field 'torch_neuronx::dispatch::LoweringResult::nki_operand_output_aliases' [-Wattributes]
+In file included from bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/torch/csrc/autograd/python_variable.h:9,
+                 from torch_neuronx/csrc/core/NeuronBindings.cpp:7:
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::dispatch::LoweringResult>':
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:82:49:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::dispatch::LoweringResult>' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+ 2042 | class class_ : public detail::generic_type {
+      |       ^~~~~~
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2106:89:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2218:94:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'class pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2228:95:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2042:7: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >' declared with greater visibility than its base 'pybind11::detail::generic_type' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::dispatch::LoweringResult; options = {}]':
+./torch_neuronx/csrc/core/dispatch/LoweringResult.h:82:49:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::dispatch::LoweringResult>::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::dispatch::LoweringResult>::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+ 2140 |             with_internals([&](internals &internals) {
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2141 |                 auto &instances = record.module_local ? get_local_internals().registered_types_cpp
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2142 |                                                       : internals.registered_types_cpp;
+      |                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2143 |                 instances[std::type_index(typeid(type_alias))]
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2144 |                     = instances[std::type_index(typeid(type))];
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2145 |             });
+      |             ~               
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::distributed::NeuronWork; options = {c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> >}]':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2106:89:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::distributed::NeuronWork, c10d::Work, c10::intrusive_ptr<torch_neuronx::distributed::NeuronWork, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronWork> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::distributed::NeuronWatchdog; options = {std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> >}]':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2218:94:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::distributed::NeuronWatchdog, std::unique_ptr<torch_neuronx::distributed::NeuronWatchdog, std::default_delete<torch_neuronx::distributed::NeuronWatchdog> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h: In instantiation of 'pybind11::class_< <template-parameter-1-1>, <template-parameter-1-2> >::class_(pybind11::handle, const char*, const Extra& ...) [with Extra = {}; type_ = torch_neuronx::distributed::NeuronBackend; options = {c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> >}]':
+torch_neuronx/csrc/core/NeuronBindings.cpp:2228:95:   required from here
+bazel-out/k8-fastbuild/bin/external/+torch_extension+torch/_virtual_includes/headers/pybind11/pybind11.h:2140:28: warning: 'pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>' declared with greater visibility than the type of its field 'pybind11::class_<torch_neuronx::distributed::NeuronBackend, c10d::Backend, c10::intrusive_ptr<torch_neuronx::distributed::NeuronBackend, c10::detail::intrusive_target_default_null_type<torch_neuronx::distributed::NeuronBackend> > >::class_<>(pybind11::handle, const char*)::<lambda(pybind11::detail::internals&)>::<record capture>' [-Wattributes]
+[3,354 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 96s local, disk-cache ... (10 actions running)
+[3,356 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 102s local, disk-cache ... (8 actions running)
+INFO: From Compiling third_party/torch-mlir/lib/Conversion/TorchToStablehlo/TorchToStablehloCustomLowering.cpp:
+third_party/torch-mlir/lib/Conversion/TorchToStablehlo/TorchToStablehloCustomLowering.cpp: In member function 'virtual llvm::LogicalResult mlir::torch::ConvertArithCmpIOp::matchAndRewrite(mlir::arith::CmpIOp, OpAdaptor, mlir::ConversionPatternRewriter&) const':
+third_party/torch-mlir/lib/Conversion/TorchToStablehlo/TorchToStablehloCustomLowering.cpp:378:68: warning: 'cmpDirection' may be used uninitialized [-Wmaybe-uninitialized]
+  378 |     auto cmpDirectionAttr = stablehlo::ComparisonDirectionAttr::get(
+      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  379 |         rewriter.getContext(), cmpDirection);
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                        
+third_party/torch-mlir/lib/Conversion/TorchToStablehlo/TorchToStablehloCustomLowering.cpp:328:36: note: 'cmpDirection' was declared here
+  328 |     stablehlo::ComparisonDirection cmpDirection;
+      |                                    ^~~~~~~~~~~~
+[3,359 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 104s local, disk-cache ... (5 actions running)
+[3,360 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 108s local, disk-cache ... (4 actions running)
+[3,362 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 110s local, disk-cache ... (2 actions running)
+[3,362 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchDialect.cpp; 119s local, disk-cache ... (2 actions running)
+[3,363 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchOpsODSGenerated.cpp; 113s local, disk-cache
+[3,363 / 3,365] Compiling third_party/torch-mlir/lib/Dialect/Torch/IR/TorchOpsODSGenerated.cpp; 124s local, disk-cache
+[3,364 / 3,365] [Prepa] Linking _C.so
+[3,364 / 3,365] Linking _C.so; 1s local, disk-cache
+INFO: Found 1 target...
+Target //:_C.so up-to-date:
+  build/temp.linux-x86_64-cpython-312/bazel-bin/_C.so
+INFO: Elapsed time: 173.671s, Critical Path: 146.91s
+INFO: 74 processes: 105 action cache hit, 3 internal, 71 local.
+INFO: Build completed successfully, 74 total actions
+INFO: 
+Copied Bazel extension: build/temp.linux-x86_64-cpython-312/bazel-bin/_C.so -> /home/ubuntu/torch-neuronx/torch_neuronx/_C.so
+Fixed RPATH on /home/ubuntu/torch-neuronx/torch_neuronx/_C.so: $ORIGIN:$ORIGIN/../../../../../torch_neuronx:$ORIGIN/../../torch_neuronx:$ORIGIN/../torch/lib:/opt/aws/neuron/lib
+bazel build //third_party/torch-mlir:_torchMlir.so --symlink_prefix=build/temp.linux-x86_64-cpython-312/bazel- --@rules_python//python/config_settings:python_version=3.12 --action_env=PYTHON_VERSION=3.12
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+INFO: Invocation ID: e504e6c7-5f4d-4fdd-977a-99148cd80091
+INFO: Options provided by the client:
+  Inherited 'common' options: --isatty=0 --terminal_columns=80
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  Inherited 'common' options: --enable_bzlmod --enable_workspace --registry=https://raw.githubusercontent.com/bazelbuild/bazel-central-registry/main/
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  'build' options: --announce_rc --enable_platform_specific_config --experimental_cc_shared_library --action_env=PATH --action_env=LD_LIBRARY_PATH --action_env=CC=gcc --action_env=CXX=g++ --spawn_strategy=local --genrule_strategy=local --linkopt=-lz --copt=-O2 --copt=-DNDEBUG --action_env=PYTORCH_VERSION=2.12.0 --action_env=PYTORCH_USE_EXTERNAL=0 --action_env=NRT_LOCAL_PATH=/opt/aws/neuron --local_cpu_resources=HOST_CPUS*0.8 --disk_cache=~/.cache/bazel-torch-neuronx
+INFO: Found applicable config definition build:linux in file /home/ubuntu/torch-neuronx/.bazelrc: --config=posix
+INFO: Found applicable config definition build:posix in file /home/ubuntu/torch-neuronx/.bazelrc: --copt=-Wno-sign-compare --copt=-Wall --copt=-Wno-error=attributes --cxxopt=-std=c++20 --host_cxxopt=-std=c++20
+Computing main repo mapping: 
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+Loading: 
+Loading: 0 packages loaded
+Analyzing: target //third_party/torch-mlir:_torchMlir.so (0 packages loaded, 0 targets configured)
+Analyzing: target //third_party/torch-mlir:_torchMlir.so (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //third_party/torch-mlir:_torchMlir.so (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //third_party/torch-mlir:_torchMlir.so up-to-date:
+  build/temp.linux-x86_64-cpython-312/bazel-bin/third_party/torch-mlir/_torchMlir.so
+INFO: Elapsed time: 0.612s, Critical Path: 0.33s
+INFO: 3 processes: 6 action cache hit, 2 internal, 1 local.
+INFO: Build completed successfully, 3 total actions
+Copied Bazel extension: build/temp.linux-x86_64-cpython-312/bazel-bin/third_party/torch-mlir/_torchMlir.so -> /home/ubuntu/torch-neuronx/third_party/torch-mlir/python/torch_mlir/_mlir_libs/_torchMlir.so
+Fixed RPATH on /home/ubuntu/torch-neuronx/third_party/torch-mlir/python/torch_mlir/_mlir_libs/_torchMlir.so: $ORIGIN:$ORIGIN/../../../../../torch_neuronx:$ORIGIN/../../torch_neuronx:$ORIGIN/../torch/lib:/opt/aws/neuron/lib
+bazel build //third_party/torch-mlir:_mlir.so --symlink_prefix=build/temp.linux-x86_64-cpython-312/bazel- --@rules_python//python/config_settings:python_version=3.12 --action_env=PYTHON_VERSION=3.12
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+INFO: Invocation ID: 5eb657ba-32be-488e-83af-3df930ae5ad4
+INFO: Options provided by the client:
+  Inherited 'common' options: --isatty=0 --terminal_columns=80
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  Inherited 'common' options: --enable_bzlmod --enable_workspace --registry=https://raw.githubusercontent.com/bazelbuild/bazel-central-registry/main/
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  'build' options: --announce_rc --enable_platform_specific_config --experimental_cc_shared_library --action_env=PATH --action_env=LD_LIBRARY_PATH --action_env=CC=gcc --action_env=CXX=g++ --spawn_strategy=local --genrule_strategy=local --linkopt=-lz --copt=-O2 --copt=-DNDEBUG --action_env=PYTORCH_VERSION=2.12.0 --action_env=PYTORCH_USE_EXTERNAL=0 --action_env=NRT_LOCAL_PATH=/opt/aws/neuron --local_cpu_resources=HOST_CPUS*0.8 --disk_cache=~/.cache/bazel-torch-neuronx
+INFO: Found applicable config definition build:linux in file /home/ubuntu/torch-neuronx/.bazelrc: --config=posix
+INFO: Found applicable config definition build:posix in file /home/ubuntu/torch-neuronx/.bazelrc: --copt=-Wno-sign-compare --copt=-Wall --copt=-Wno-error=attributes --cxxopt=-std=c++20 --host_cxxopt=-std=c++20
+Computing main repo mapping: 
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+Loading: 
+Loading: 0 packages loaded
+Analyzing: target //third_party/torch-mlir:_mlir.so (0 packages loaded, 0 targets configured)
+Analyzing: target //third_party/torch-mlir:_mlir.so (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //third_party/torch-mlir:_mlir.so (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //third_party/torch-mlir:_mlir.so up-to-date:
+  build/temp.linux-x86_64-cpython-312/bazel-bin/third_party/torch-mlir/_mlir.so
+INFO: Elapsed time: 0.914s, Critical Path: 0.66s
+INFO: 2 processes: 44 action cache hit, 1 internal, 1 local.
+INFO: Build completed successfully, 2 total actions
+INFO: 
+Copied Bazel extension: build/temp.linux-x86_64-cpython-312/bazel-bin/third_party/torch-mlir/_mlir.so -> /home/ubuntu/torch-neuronx/third_party/torch-mlir/python/torch_mlir/_mlir_libs/_mlir.so
+Fixed RPATH on /home/ubuntu/torch-neuronx/third_party/torch-mlir/python/torch_mlir/_mlir_libs/_mlir.so: $ORIGIN:$ORIGIN/../../../../../torch_neuronx:$ORIGIN/../../torch_neuronx:$ORIGIN/../torch/lib:/opt/aws/neuron/lib
+bazel build //third_party/torch-mlir:_stablehlo.so --symlink_prefix=build/temp.linux-x86_64-cpython-312/bazel- --@rules_python//python/config_settings:python_version=3.12 --action_env=PYTHON_VERSION=3.12
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+INFO: Invocation ID: 23c0ffd9-2e5d-4bd8-abb9-2e062ba44765
+INFO: Options provided by the client:
+  Inherited 'common' options: --isatty=0 --terminal_columns=80
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  Inherited 'common' options: --enable_bzlmod --enable_workspace --registry=https://raw.githubusercontent.com/bazelbuild/bazel-central-registry/main/
+INFO: Reading rc options for 'build' from /home/ubuntu/torch-neuronx/.bazelrc:
+  'build' options: --announce_rc --enable_platform_specific_config --experimental_cc_shared_library --action_env=PATH --action_env=LD_LIBRARY_PATH --action_env=CC=gcc --action_env=CXX=g++ --spawn_strategy=local --genrule_strategy=local --linkopt=-lz --copt=-O2 --copt=-DNDEBUG --action_env=PYTORCH_VERSION=2.12.0 --action_env=PYTORCH_USE_EXTERNAL=0 --action_env=NRT_LOCAL_PATH=/opt/aws/neuron --local_cpu_resources=HOST_CPUS*0.8 --disk_cache=~/.cache/bazel-torch-neuronx
+INFO: Found applicable config definition build:linux in file /home/ubuntu/torch-neuronx/.bazelrc: --config=posix
+INFO: Found applicable config definition build:posix in file /home/ubuntu/torch-neuronx/.bazelrc: --copt=-Wno-sign-compare --copt=-Wall --copt=-Wno-error=attributes --cxxopt=-std=c++20 --host_cxxopt=-std=c++20
+Computing main repo mapping: 
+WARNING: Option 'local_cpu_resources' is deprecated: --local_cpu_resources is deprecated, please use --local_resources=cpu= instead.
+Loading: 
+Loading: 0 packages loaded
+Analyzing: target //third_party/torch-mlir:_stablehlo.so (0 packages loaded, 0 targets configured)
+Analyzing: target //third_party/torch-mlir:_stablehlo.so (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //third_party/torch-mlir:_stablehlo.so (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //third_party/torch-mlir:_stablehlo.so up-to-date:
+  build/temp.linux-x86_64-cpython-312/bazel-bin/third_party/torch-mlir/_stablehlo.so
+INFO: Elapsed time: 0.421s, Critical Path: 0.16s
+INFO: 3 processes: 7 action cache hit, 2 internal, 1 local.
+INFO: Build completed successfully, 3 total actions
+INFO: 
+Copied Bazel extension: build/temp.linux-x86_64-cpython-312/bazel-bin/third_party/torch-mlir/_stablehlo.so -> /home/ubuntu/torch-neuronx/third_party/torch-mlir/python/torch_mlir/_mlir_libs/_stablehlo.so
+Fixed RPATH on /home/ubuntu/torch-neuronx/third_party/torch-mlir/python/torch_mlir/_mlir_libs/_stablehlo.so: $ORIGIN:$ORIGIN/../../../../../torch_neuronx:$ORIGIN/../../torch_neuronx:$ORIGIN/../torch/lib:/opt/aws/neuron/lib
+[TIMING] Bazel Extension Build completed in 177.78 seconds
