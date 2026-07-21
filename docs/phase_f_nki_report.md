@@ -138,7 +138,7 @@ On subsequent calls the caller pays the cost of a `wrap_nki` HOP dispatch (a few
 
 Concretely, the ~1 ms framework floor and ~100 us NKI floor imply that **the torch.distributed dispatch chain is spending ~900 us of pure launch overhead on every call**. That is what the NKI-kernel path eliminates.
 
-## LNC=2 status: broken under Beta 3 + nki-library 2.31
+## LNC=2 status: broken under Beta 3 `wrap_nki`, root cause identified
 
 Every attempt to run the NKI kernels under `NEURON_LOGICAL_NC_CONFIG=2` (either with `kernel[1]` or `kernel[2]` for the SPMD launch grid) failed compilation with:
 
@@ -148,9 +148,19 @@ not find MemoryLocation named inst__I-3-0:src on core 1 - Please open a
 support ticket at https://github.com/aws-neuron/aws-neuron-sdk/issues/new."
 ```
 
-This is a version-skew issue: nki-library tag 2.31 (the source of the HBM kernels) was written against a newer `nki` core than Beta 3 bundles (`nki 0.4.0b4+25235956053.gc803c806`). The failure is deterministic and independent of world size (fails at WS=2 the same way it fails at WS=4).
+**Follow-up test (2026-07-21)**: verified the LNC=2 failure is **not** a nki version skew.
 
-The LNC=1 path works cleanly. All the numbers in this report use LNC=1 with 8 logical cores on one trn2.48xlarge chip. Once Beta 4 ships a matching `nki` wheel or nki-library ships an LNC=2 compatible kernel bundle, users can flip `NKI_LNC_DEGREE=2` and expect the same speedup at LNC=2 world sizes.
+Setup: on a fresh trn2.3xlarge (SDK 2.31 DLAMI + our Beta 3 install), upgraded `nki` (0.4.0b4 -> **0.5.0+28631259367.ga768afa6**) and `neuronx-cc` (2.25.1280 -> **2.26.6360.0**) from the Neuron pip repo, plus SDK 2.31 host runtime lib 2.33.10 + collectives 2.33.10. LNC=1 speedups continue to work (2.3-4.7x on trn2.3xlarge). **LNC=2 still fails with the identical `NCC_ILLC059` error.**
+
+The same kernel source compiles cleanly under LNC=2 through the DLAMI's stock torch-XLA path (torch-neuronx 2.9 + xm.xla_device). Correctness verified: WS=4 LNC=2 all_reduce returns the expected sum. This pinpoints the bug in Beta 3's **`torch_neuronx.wrap_nki`** HOP -- not in the nki version, not in the kernel source, not in the compiler.
+
+XLA is not a practical workaround: XLA's lazy graph construction makes each per-iteration NKI kernel call ~100x slower than the fused framework path (~84 ms per NKI call vs ~230 us for `xm.all_reduce` at 1 MB WS=4 LNC=2). The 7-13x speedup we see under Beta 3 wrap_nki depends on wrap_nki's eager dispatch semantics.
+
+**Recommendation**: wait for Beta 4. If Beta 4's `torch_neuronx.wrap_nki` fixes the LNC=2 dispatch bug, the same code path we've measured under LNC=1 should immediately extend to LNC=2 world sizes (WS=4 on trn2.3xlarge, WS=32-64 on trn2.48xlarge). No user-side change needed -- just set `NKI_LNC_DEGREE=2` in the env.
+
+Raw logs for the nki 0.5.0 LNC=2 retest are in `working/collective/task-010/logs/phase_f_lnc2_test/`.
+
+The LNC=1 path works cleanly. All the numbers in this report use LNC=1 with 8 logical cores on one trn2.48xlarge chip. Once Beta 4 fixes the `wrap_nki` LNC=2 bug, users can flip `NKI_LNC_DEGREE=2` and expect the same speedup at LNC=2 world sizes.
 
 ## What this means for the collective project
 
@@ -188,7 +198,7 @@ The single-node sbatch above needs a `EXTRA=--use-nki` toggle wired into `launch
 ## Follow-ups for task 008
 
 * **Bundle `--use-nki` into the sbatch launcher's export list.** The current `launch_cookbook_singlenode.sbatch` does not thread through an `EXTRA` variable; adding one line so `--use-nki` can be toggled from the queue is a 5-line change.
-* **Retry LNC=2 on Beta 4** whenever it ships. If the `NCC_ILLC059` compile failure is resolved, the same speedups should extend to LNC=2 world sizes (WS=4 on trn2.3xlarge, WS=32-64 on trn2.48xlarge).
+* **Retry LNC=2 on Beta 4** whenever it ships. Follow-up on 2026-07-21 confirmed that upgrading nki to 0.5.0 and neuronx-cc to 2.26 (i.e. matching SDK 2.31's versions) does NOT fix the LNC=2 `NCC_ILLC059` compile error. The bug is in Beta 3's `torch_neuronx.wrap_nki` HOP, not in the nki version or the kernel source. The same kernel compiles cleanly under LNC=2 via the SDK 2.31 DLAMI's stock torch-XLA path. Fix path: wait for Beta 4's wrap_nki update. If the LNC=2 dispatch is repaired, the same speedups should extend to LNC=2 world sizes (WS=4 on trn2.3xlarge, WS=32-64 on trn2.48xlarge) with no code change -- just set `NKI_LNC_DEGREE=2`.
 * **Cross-node NKI test.** We only ran single-node. Would the NKI kernel path also win across nodes via EFA? nki-library exposes `ReplicaGroup` explicitly, so in principle yes -- but the underlying CCOM path from a compiled NEFF may or may not skip the same layers we skip locally. Worth a Phase G measurement once the LNC=2 issue is resolved and the queue is quiet.
 * **bf16 support.** The HBM kernels are fp32-only in nki-library 2.31; a bf16 variant would immediately halve the byte count on the wire and cut latency proportionally. Filed as a follow-up wish item.
 
