@@ -19,19 +19,16 @@ def timed_reduce_scatter(input, start_event, end_event, args):
     output = torch.empty(input.size(0) // world_size, dtype=input.dtype, device=input.device)
 
     # Decide framework vs NKI-kernel path once, outside the timed loop
-    nki_path = use_nki(args)
-    if nki_path:
-        _call = lambda t: nki_dispatch('reduce_scatter', t, world_size)
-    else:
-        def _fw_call(t):
-            if hasattr(torch.distributed, "reduce_scatter_tensor"):
-                dist.reduce_scatter_tensor(output, t, async_op=args.async_op)
-            elif hasattr(torch.distributed, "_reduce_scatter_base"):
-                dist._reduce_scatter_base(output, t, async_op=args.async_op)
-            else:
-                input_tensors = list(torch.chunk(t, dist.get_world_size()))
-                dist.reduce_scatter(output, input_tensors, async_op=args.async_op)
-        _call = _fw_call
+    def _fw_call(t):
+        if hasattr(torch.distributed, "reduce_scatter_tensor"):
+            dist.reduce_scatter_tensor(output, t, async_op=args.async_op)
+        elif hasattr(torch.distributed, "_reduce_scatter_base"):
+            dist._reduce_scatter_base(output, t, async_op=args.async_op)
+        else:
+            input_tensors = list(torch.chunk(t, dist.get_world_size()))
+            dist.reduce_scatter(output, input_tensors, async_op=args.async_op)
+
+    _call = make_nki_or_framework_call('reduce_scatter', world_size, _fw_call, args)
 
     sync_all()
     # Warmups, establish connections, etc.

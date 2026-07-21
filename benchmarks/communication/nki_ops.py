@@ -95,20 +95,29 @@ def _to_kernel_shape(x: torch.Tensor, coll: str, world_size: int) -> torch.Tenso
     All HBM kernels take rank-2 input.  H is fixed at 128 (fp32 partition).
     For reduce_scatter the input needs to be world_size times taller (so
     each rank's output chunk is the full 1-D size).
+
+    Raises SkipSizeError if the tensor is too small or has an awkward shape
+    for the NKI kernel; the caller should fall back to the framework path
+    for that particular size.
     """
     numel = x.numel()
     if coll == "reduce_scatter":
         h = _NKI_PARTITION_ROWS * world_size
     else:
         h = _NKI_PARTITION_ROWS
-    if numel % h != 0:
-        raise ValueError(
-            f"NKI path: numel={numel} not divisible by required H={h} "
-            f"(coll={coll}, world_size={world_size}). Skip this size or "
-            f"round up the benchmark tensor."
+    if numel < h or numel % h != 0:
+        raise SkipSizeError(
+            f"NKI path: numel={numel} not compatible with required H={h} "
+            f"(coll={coll}, world_size={world_size})"
         )
     w = numel // h
     return x.view(h, w)
+
+
+class SkipSizeError(ValueError):
+    """Raised when a tensor shape is not compatible with the NKI HBM kernel.
+    Callers should catch this and fall back to the framework path.
+    """
 
 
 def is_nki_supported(coll: str, dtype: torch.dtype) -> bool:

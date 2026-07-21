@@ -16,13 +16,8 @@ def timed_all_reduce(input, start_event, end_event, args):
 
     # --- Decide framework vs NKI-kernel path once, outside the timed loop ---
     world_size = dist.get_world_size()
-    nki_path = use_nki(args)
-    if nki_path:
-        # Reshape to (128, N/128) so the NKI HBM kernel accepts it.
-        # nki_dispatch handles caching the wrapped kernel per shape.
-        _call = lambda t: nki_dispatch('all_reduce', t, world_size)
-    else:
-        _call = lambda t: dist.all_reduce(t, async_op=args.async_op)
+    _framework = lambda t: dist.all_reduce(t, async_op=args.async_op)
+    _call = make_nki_or_framework_call('all_reduce', world_size, _framework, args)
 
     sync_all()
     # Warmups, establish connections, etc.

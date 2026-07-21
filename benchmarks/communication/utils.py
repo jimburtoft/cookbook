@@ -359,6 +359,29 @@ def nki_dispatch(coll: str, tensor: torch.Tensor, world_size: int) -> torch.Tens
     return dispatch_call(coll, tensor, world_size)
 
 
+def make_nki_or_framework_call(coll: str, world_size: int, framework_call, args):
+    """Return a callable that runs `coll` via the NKI kernel when possible,
+    falling back to `framework_call(tensor)` when the NKI path is disabled or
+    the tensor shape is not compatible with the NKI HBM kernel.
+
+    Uses `args.use_nki` (from --use-nki) to gate the NKI path. The fallback
+    handles the "tensor smaller than a partition" case that comes up at the
+    start of a size scan.
+    """
+    if not use_nki(args):
+        return framework_call
+
+    from .nki_ops import SkipSizeError as _SkipSizeError
+
+    def call(tensor):
+        try:
+            return nki_dispatch(coll, tensor, world_size)
+        except _SkipSizeError:
+            return framework_call(tensor)
+
+    return call
+
+
 def benchmark_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_rank", type=int)
