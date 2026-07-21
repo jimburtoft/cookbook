@@ -15,28 +15,36 @@ def timed_all_to_all(input, output, start_event, end_event, args):
         import deepspeed.comm as dist
 
     world_size = dist.get_world_size()
-    sync_all()
 
     if args.all_to_all_v:
         # Split input and output into lists of tensors
         input_list = list(input.chunk(world_size))
         output_list = list(output.chunk(world_size))
 
+    # Decide framework vs NKI-kernel path once, outside the timed loop.
+    # NKI HBM all_to_all kernel does not support the --all-to-all-v variant;
+    # fall back to framework when that flag is set.
+    nki_path = use_nki(args) and not args.all_to_all_v
+    if nki_path:
+        _call = lambda t: nki_dispatch('all_to_all', t, world_size)
+    else:
+        def _fw_call(t):
+            if args.all_to_all_v:
+                dist.all_to_all(output_list, input_list, async_op=args.async_op)
+            else:
+                dist.all_to_all_single(output, t, async_op=args.async_op)
+        _call = _fw_call
+
+    sync_all()
     # Warmups, establish connections, etc.
     for i in range(args.warmups):
-        if args.all_to_all_v:
-            dist.all_to_all(output_list, input_list, async_op=args.async_op)
-        else:
-            dist.all_to_all_single(output, input, async_op=args.async_op)
+        _call(input)
     sync_all()
 
     # time the actual comm op trials times and average it
     start_event = record_event(start_event)
     for i in range(args.trials):
-        if args.all_to_all_v:
-            dist.all_to_all(output_list, input_list, async_op=args.async_op)
-        else:
-            dist.all_to_all_single(output, input, async_op=args.async_op)
+        _call(input)
     end_event = record_event(end_event)
     sync_all()
     duration = elapsed_seconds(start_event, end_event)

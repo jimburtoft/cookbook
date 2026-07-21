@@ -14,16 +14,26 @@ def timed_all_reduce(input, start_event, end_event, args):
     elif args.dist == 'deepspeed':
         import deepspeed.comm as dist
 
+    # --- Decide framework vs NKI-kernel path once, outside the timed loop ---
+    world_size = dist.get_world_size()
+    nki_path = use_nki(args)
+    if nki_path:
+        # Reshape to (128, N/128) so the NKI HBM kernel accepts it.
+        # nki_dispatch handles caching the wrapped kernel per shape.
+        _call = lambda t: nki_dispatch('all_reduce', t, world_size)
+    else:
+        _call = lambda t: dist.all_reduce(t, async_op=args.async_op)
+
     sync_all()
     # Warmups, establish connections, etc.
     for i in range(args.warmups):
-        dist.all_reduce(input, async_op=args.async_op)
+        _call(input)
     sync_all()
 
     # time the actual comm op trials times and average it
     start_event = record_event(start_event)
     for i in range(args.trials):
-        dist.all_reduce(input, async_op=args.async_op)
+        _call(input)
     end_event = record_event(end_event)
     sync_all()
     duration = elapsed_seconds(start_event, end_event)

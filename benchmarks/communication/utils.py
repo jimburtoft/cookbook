@@ -341,6 +341,24 @@ def empty_cache():
         torch.cuda.empty_cache()
 
 
+def use_nki(args) -> bool:
+    """True when the caller wants the NKI kernel path.
+
+    Only valid on the Neuron backend and only for fp32 tensors and for the
+    four collectives (all_reduce, all_gather, reduce_scatter, all_to_all)
+    that nkilib exports HBM kernels for. Callers should still fall back to
+    the framework path for broadcast/pt2pt and for non-fp32 dtypes.
+    """
+    return bool(getattr(args, "use_nki", False)) and _NEURON_ACTIVE
+
+
+def nki_dispatch(coll: str, tensor: torch.Tensor, world_size: int) -> torch.Tensor:
+    """Run the NKI-kernel version of `coll` on `tensor`. See nki_ops.py."""
+    # Import lazily so runs without --use-nki don't pay the import cost.
+    from .nki_ops import dispatch_call
+    return dispatch_call(coll, tensor, world_size)
+
+
 def benchmark_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_rank", type=int)
@@ -375,4 +393,11 @@ def benchmark_parser():
     parser.add_argument("--debug", action="store_true", help='Enables all_to_all debug prints')
     parser.add_argument('--all-to-all-v', action='store_true', 
                         help='Use alltoallv instead of alltoall. This will run the all_to_all benchmark with vector variant. Use with --all-to-all or alone to run just this benchmark.')
+    parser.add_argument('--use-nki', action='store_true',
+                        help='On the Neuron backend, replace torch.distributed collective calls '
+                             'with direct invocations of the nkilib HBM kernels (all_reduce_hbm_kernel etc.) '
+                             'via torch_neuronx.wrap_nki. Bypasses the torch.distributed dispatch '
+                             'layer and typically yields 7-10x speedup at small-to-medium messages. '
+                             'Only supports all_reduce, all_gather, reduce_scatter, all_to_all in fp32. '
+                             'Requires nkilib on PYTHONPATH; see docs/phase_e_nki_report.md.')
     return parser

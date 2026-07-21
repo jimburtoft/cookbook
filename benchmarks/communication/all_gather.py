@@ -15,36 +15,35 @@ def timed_all_gather(input, output, start_event, end_event, args):
     elif args.dist == 'deepspeed':
         import deepspeed.comm as dist
 
+    # Decide framework vs NKI-kernel path once, outside the timed loop
+    world_size = dist.get_world_size()
+    nki_path = use_nki(args)
+    if nki_path:
+        _call = lambda t: nki_dispatch('all_gather', t, world_size)
+    else:
+        def _fw_call(t):
+            if args.dist == 'torch':
+                if hasattr(torch.distributed, "all_gather_into_tensor"):
+                    dist.all_gather_into_tensor(output, t, group=None, async_op=args.async_op)
+                elif hasattr(torch.distributed, "_all_gather_base"):
+                    dist._all_gather_base(output, t, group=None, async_op=args.async_op)
+                else:
+                    output_tensors = list(torch.chunk(output, dist.get_world_size()))
+                    dist.all_gather(output_tensors, t, group=None, async_op=True)
+            elif args.dist == 'deepspeed':
+                dist.allgather_fn(output, t, group=None, async_op=args.async_op)
+        _call = _fw_call
+
     sync_all()
     # Warmups, establish connections, etc.
     for i in range(args.warmups):
-        if args.dist == 'torch':
-            if hasattr(torch.distributed, "all_gather_into_tensor"):
-                dist.all_gather_into_tensor(output, input, group=None, async_op=args.async_op)
-            elif hasattr(torch.distributed, "_all_gather_base"):
-                dist._all_gather_base(output, input, group=None, async_op=args.async_op)
-            else:
-                output_tensors = list(
-                    torch.chunk(output,
-                                dist.get_world_size()))
-                dist.all_gather(output_tensors, input, group=None, async_op=True)
-        elif args.dist == 'deepspeed':
-            dist.allgather_fn(output, input, group=None, async_op=args.async_op)
+        _call(input)
     sync_all()
 
     # time the actual comm op trials times and average it
     start_event = record_event(start_event)
     for i in range(args.trials):
-        if args.dist == 'torch':
-            if hasattr(torch.distributed, "_all_gather_base"):
-                dist._all_gather_base(output, input, group=None, async_op=args.async_op)
-            else:
-                output_tensors = list(
-                    torch.chunk(output,
-                                dist.get_world_size()))
-                dist.all_gather(output_tensors, input, group=None, async_op=True)
-        elif args.dist == 'deepspeed':
-            dist.allgather_fn(output, input, group=None, async_op=args.async_op)
+        _call(input)
     end_event = record_event(end_event)
     sync_all()
     duration = elapsed_seconds(start_event, end_event)
