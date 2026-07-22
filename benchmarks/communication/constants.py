@@ -9,9 +9,8 @@ TORCH_DISTRIBUTED_DEFAULT_PORT = 29500
 
 # --- Neuron additions ---
 # Backend string for torch.distributed on AWS Trainium under PyTorch Native.
-# Verified from OpencodeDocs/steering/pytorch-native.md (Ticket 49): DDP works
-# with backend='neuron'. This is NOT nccl, xla, or gloo -- it is the Neuron
-# distributed backend registered by torch_neuronx.
+# torch_neuronx registers a distributed backend under the name 'neuron' when
+# imported.  This is NOT nccl, xla, or gloo.
 NEURON_BACKEND = 'neuron'
 
 # HBM budget per logical NeuronCore (bytes).

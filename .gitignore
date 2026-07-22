@@ -1,0 +1,13 @@
+# Neuron-fork additions
+logs/
+neuron-cache/
+*.neff
+*.hlo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/

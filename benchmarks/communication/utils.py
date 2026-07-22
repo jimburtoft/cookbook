@@ -192,11 +192,9 @@ def get_metric_strings(args, tput, busbw, duration):
 def sync_all():
     """Barrier + device synchronize. Works for both CUDA and Neuron backends.
 
-    Neuron ops are asynchronous with respect to the CPU under PyTorch Native
-    Beta 3; without a device-side sync before the barrier the caller measures
-    dispatch time instead of actual completion time. See
-    OpencodeDocs/steering/pytorch-native.md and Task 003 (this project) for
-    the failure mode we are guarding against.
+    Neuron ops are asynchronous with respect to the CPU under PyTorch Native;
+    without a device-side sync before the barrier the caller measures dispatch
+    time instead of actual completion time.
     """
     if _NEURON_ACTIVE:
         torch.neuron.synchronize()
@@ -297,9 +295,7 @@ def record_event(event):
     Why the extra sync on the Neuron path:  time.perf_counter() is a
     wall-clock call that runs on the CPU immediately -- it is not aware of
     the Neuron device queue. Without the sync we would measure host
-    dispatch time, not real completion time. This is exactly the failure
-    mode Task 003 (this project) documented at the XLA layer, and the
-    steering doc warns about at line 506.
+    dispatch time, not real completion time.
 
     Note: because callers already wrap timed loops with sync_all() at both
     ends, the extra sync inside record_event() is technically redundant

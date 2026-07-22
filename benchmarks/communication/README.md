@@ -1,5 +1,11 @@
 # Communication Benchmarks
 
+> **AWS Trainium / Neuron users**: this branch adds a `neuron` backend and a
+> `--use-nki` flag to bypass `torch.distributed` with `nki-library`'s HBM
+> collective kernels via `torch_neuronx.wrap_nki`.  See
+> [`NEURON.md`](../../NEURON.md) at the repository root for install
+> requirements, quick-start commands, and Slurm launchers.
+
 The intent of these benchmarks is to measure communication latency/bandwidth of DeepSpeed and/or pytorch distributed communication operations at the Python layer. These benchmarks are complementary to C-level comms benchmarks like [OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/) and [NCCL Tests](https://github.com/NVIDIA/nccl-tests) in that users can:
 - Easily debug which layer of the communication software stack hangs or performance degradations originate from.
 - Measure the expected communication performance of either DeepSpeed comms or pure PyTorch distributed
@@ -53,9 +59,9 @@ There is a wide range of arguments available:
 
 ```
 usage: run_all.py [-h] [--local_rank LOCAL_RANK] [--trials TRIALS] [--warmups WARMUPS] [--maxsize MAXSIZE]
-                  [--async-op] [--bw-unit {Gbps,GBps}] [--backend {nccl,ccl,mpi}] [--dist {deepspeed,torch}] [--scan]
-                  [--raw] [--all-reduce] [--all-gather] [--all-to-all] [--pt2pt] [--broadcast] [--dtype DTYPE]
-                  [--mem-factor MEM_FACTOR] [--debug]
+                  [--async-op] [--bw-unit {Gbps,GBps}] [--backend {nccl,ccl,mpi,neuron}] [--dist {deepspeed,torch}] [--scan]
+                  [--raw] [--all-reduce] [--reduce-scatter] [--all-gather] [--all-to-all] [--pt2pt] [--broadcast]
+                  [--dtype DTYPE] [--mem-factor MEM_FACTOR] [--debug] [--all-to-all-v] [--use-nki]
 
 options:
   -h, --help            show this help message and exit
@@ -65,13 +71,15 @@ options:
   --maxsize MAXSIZE     Max message size as a power of 2
   --async-op            Enables non-blocking communication
   --bw-unit {Gbps,GBps}
-  --backend {nccl,ccl,mpi}
-                        Communication library to use
+  --backend {nccl,ccl,mpi,neuron}
+                        Communication library to use.  `neuron` selects the
+                        AWS Trainium backend registered by torch_neuronx.
   --dist {deepspeed,torch}
                         Distributed DL framework to use
   --scan                Enables scanning all message sizes
   --raw                 Print the message size and latency without units
   --all-reduce          Run all_reduce
+  --reduce-scatter      Run reduce_scatter
   --all-gather          Run all_gather
   --all-to-all          Run all_to_all
   --pt2pt               Run pt2pt
@@ -80,6 +88,10 @@ options:
   --mem-factor MEM_FACTOR
                         Proportion of max available GPU memory to use for single-size evals
   --debug               Enables all_to_all debug prints
+  --all-to-all-v        Use alltoallv instead of alltoall.
+  --use-nki             (Neuron backend only) Replace torch.distributed
+                        collective calls with the corresponding nkilib HBM
+                        kernels via torch_neuronx.wrap_nki.  See NEURON.md.
 ```
 
 # Adding Communication Benchmarks
