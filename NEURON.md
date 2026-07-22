@@ -208,7 +208,8 @@ Not bugs in this fork -- properties of the Neuron backend as of Beta 3:
 
 ## Verifying your install
 
-Quick self-test that ensures `--use-nki` works end-to-end at LNC=2:
+Quick self-test that ensures `--use-nki` works end-to-end at LNC=2.  Run
+from the repository root:
 
 ```bash
 source $HOME/workspace/native_venv/bin/activate
@@ -216,14 +217,18 @@ export PYTHONPATH=/path/to/nki-library/src:$PYTHONPATH
 export NEURON_LOGICAL_NC_CONFIG=2
 export NKI_LNC_DEGREE=2
 
+cd benchmarks
+
 # Framework path baseline
 torchrun --standalone --nnodes=1 --nproc_per_node=4 \
+    --rdzv_backend=c10d --rdzv_endpoint=localhost:29500 \
     -m communication.run_all \
     --dist=torch --backend=neuron --all-reduce --scan \
     --trials 20 --warmups 5 --maxsize 20 --raw --bw-unit GBps
 
 # NKI path
 torchrun --standalone --nnodes=1 --nproc_per_node=4 \
+    --rdzv_backend=c10d --rdzv_endpoint=localhost:29500 \
     -m communication.run_all \
     --dist=torch --backend=neuron --all-reduce --use-nki --scan \
     --trials 20 --warmups 5 --maxsize 20 --raw --bw-unit GBps
